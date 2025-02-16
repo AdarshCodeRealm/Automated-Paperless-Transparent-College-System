@@ -11,7 +11,7 @@ connectDB()
     app.get("/", (req, res) => {
       res.status(200).json({
         status: "success",
-        message: "Server is running fine",
+        message: "Server is running ",
       })
     }),
     app.listen(port, () => {
@@ -19,6 +19,7 @@ connectDB()
     })
   )
   .catch((error) => {
-    // console.log("MongoDB connection failed :", error)
+
+    // console.log("MongoDB connection failed :", error);
   }
 )
