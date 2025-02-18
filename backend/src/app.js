@@ -2,7 +2,7 @@ import express from "express"
 import cookieParser from "cookie-parser"
 import Cors from "cors"
 import dotenv from "dotenv"
-dotenv.config({ path: ".env" })
+dotenv.config({ path: "./.env" })
 
 const app = express()
 app.use(
@@ -16,6 +16,7 @@ app.use(express.json({ limit: "16kb" }))
 app.use(express.urlencoded({ limit: "16kb", extended: true }))
 app.use(express.static("public"))
 app.use(cookieParser())
+
 
 import applicationAndApprovalSystemRouter from "./routes/applicationAndApprovalSystem.routes.js"
 app.use("/applicationAndApprovalSystem", applicationAndApprovalSystemRouter)
@@ -40,5 +41,9 @@ app.use("/integrityAndCheatingRecord", integrityAndCheatingRecordRouter)
 
 import testRouter from "./routes/test.route.js"
 app.use("/test", testRouter)
+
+
+import userRouter from "./routes/user.routes.js"
+app.use("/user", userRouter)
 
 export {app}

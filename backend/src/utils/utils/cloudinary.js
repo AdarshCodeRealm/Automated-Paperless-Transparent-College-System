@@ -1,29 +1,24 @@
 import { v2 as cloudinary } from "cloudinary"
 import fs from "fs"
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+import dotenv from "dotenv"
 
-//localFilePath = req.files.filename[0].path    --> filename getting when multer middleware name in route
-const uploadOnCloudinary = async (localFilePath) => {
+dotenv.config({ path: ".env" })
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+async function uploadOnCloudinary(localFilePath) {
   try {
-    if (!localFilePath) return null
-    //upload the file on cloudinary
-    const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
-    })
-    // file has been uploaded successfull
-    console.log("file is uploaded on cloudinary ", response.url);
+    const result = await cloudinary.uploader.upload(localFilePath);
     fs.unlinkSync(localFilePath)
-    return response
-  } 
-  
-  catch (error) {
-    fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation got failed
-   
-    return null
+    return result; // Return the Cloudinary result
+  } catch (error) {
+    console.error("Error uploading to Cloudinary:", error);
+    fs.unlinkSync(localFilePath)
+    throw error; // Re-throw the error to be handled by the caller
   }
 }
+
 export { uploadOnCloudinary }
