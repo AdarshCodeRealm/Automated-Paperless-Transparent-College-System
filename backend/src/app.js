@@ -8,7 +8,7 @@ const app = express()
 app.use(
   Cors({
     origin: process.env.CORS_ORIGIN,
-    Credential: true,
+    credentials: true,
   })
 )
 
@@ -41,6 +41,9 @@ app.use("/integrityAndCheatingRecord", integrityAndCheatingRecordRouter)
 
 import testRouter from "./routes/test.route.js"
 app.use("/test", testRouter)
+
+import electionRoutes from './routes/election.routes.js'
+app.use('/election', electionRoutes);
 
 
 import userRouter from "./routes/user.routes.js"

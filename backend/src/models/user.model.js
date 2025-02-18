@@ -1,3 +1,24 @@
+import mongoose from 'mongoose';
+
+const userSchema = new mongoose.Schema({
+    name:{type: String ,required:true},
+    email:{type:String, required:true,unique:true},
+    password:{type:String,required:true},
+    role:{type:String, enum:['student','admin','candidate'],default:'student'},
+
+    // position:{
+    //     type:String,
+    //     required:function(){return this.role ==='candidate'}
+    // },
+
+    // votes:{
+    //     type:Number,
+    //     default:0,
+    //     required:function(){return this.role ==='candidate'}
+    // },
+});
+
+export default mongoose.model('User',userSchema)
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
