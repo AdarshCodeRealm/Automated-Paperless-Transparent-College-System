@@ -2,9 +2,13 @@ import {
   userProfile as userModel,
   registerUser as userRegisterModel,
 } from "../models/user.model.js"
-import { sendMail } from "../utils/utils/NodeMailer.js"
+import {
+  sendOtpVerificationMail,
+  sendResetPasswordMail,
+} from "../utils/utils/NodeMailer.js"
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await userModel.findById(userId)
@@ -37,6 +41,15 @@ const registerUser = async (req, res) => {
       message: `User already exist with email : ${email}`,
     })
   }
+  const checkregister = await userRegisterModel.findOne({ email })
+  if (checkregister) {
+    return res.status(400).json({
+      status: "Failed to register user",
+      message: `Registration already exist with email : ${email}, check your email for otp `,
+      inProcess: true,
+    })
+  }
+
   let avatarLocalPath,
     avatar = null
 
@@ -48,8 +61,8 @@ const registerUser = async (req, res) => {
   try {
     // Send verification email
     const OTP = Math.floor(Math.random() * 1000000)
-    await sendMail(email, OTP)
-    console.log("before user ..........")
+    await sendOtpVerificationMail(email, OTP)
+
     const user = await userRegisterModel.create({
       name,
       email,
@@ -62,7 +75,6 @@ const registerUser = async (req, res) => {
       otp: OTP,
     })
 
-    console.log("req.body", req.body)
     const createdUser = await userRegisterModel
       .findById(user._id)
       .select("-password ")
@@ -84,7 +96,8 @@ const registerUser = async (req, res) => {
 const VerifyOtp = async (req, res) => {
   const { email, otp } = req.body
   try {
-    const user = await userRegisterModel.findOne({ email: email })
+    const user = await userRegisterModel.findOne({ email })
+    console.log("user", user)
     if (!user) {
       return res.status(400).json({
         status: "Failed to verify otp",
@@ -133,22 +146,21 @@ const VerifyOtp = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body
-
   if (!password && !email) {
     throw new ApiError(400, `email or password is required : ${email}`)
   }
-
   const user = await userModel
     .findOne({ email })
     .select(["-password ", "-refreshToken"])
-
   if (!user) {
     return res.status(400).json({
       status: "Failed to login",
       message: "User not found",
     })
   }
+
   const isMatch = await user.isPasswordCorrect(password)
+  console.log("isMatch", isMatch)
 
   if (!isMatch) {
     return res.status(400).json({
@@ -198,22 +210,21 @@ const logoutUser = async (req, res) => {
       { $unset: { refreshToken: 1 } },
       { new: true }
     )
-    res.status(200).json({ message: "User logged out successfully" })
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    }
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", "", options)
+      .clearCookie("refreshToken", "", options)
+      .json({ message: "User logged Out Successfully" })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Internal server error", error: err })
   }
-
-  const options = {
-    httpOnly: true,
-    secure: true,
-  }
-
-  return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"))
 }
 
 const getCurrentUser = async (req, res) => {
@@ -249,7 +260,7 @@ const forgetPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" })
     }
     const OTP = Math.floor(Math.random() * 1000000)
-    await sendMail(email, OTP)
+    await sendOtpVerificationMail(email, OTP)
 
     user.otp = OTP
     await user.save({ validateBeforeSave: false })
@@ -272,7 +283,9 @@ const resetPassword = async (req, res) => {
     if (!otpcheck) {
       return res.status(400).json({ message: "Invalid OTP" })
     }
-    user.password = newPassword
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+    user.password = hashedPassword
     user.otp = null
     await user.save({ validateBeforeSave: false })
     return res.status(200).json({ message: "Password reset successfully" })

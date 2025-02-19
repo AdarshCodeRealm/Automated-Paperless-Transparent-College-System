@@ -114,7 +114,7 @@ const userRegisterSchema = new mongoose.Schema(
   }
 )
 
-// userRegisterSchema.index({ expireAt: 1 }, { expireAfterSeconds: 60 })
+userRegisterSchema.index({ expireAt: 1 }, { expireAfterSeconds: 900 })
 
 
 userProfileSchema.methods.generateRefreshToken = function () {
@@ -158,27 +158,43 @@ userRegisterSchema.pre("save", async function (next) {
   this.otp = await bcrypt.hash(this.otp, 10)
   next()
 })
+
+userRegisterSchema.methods.isOtpCorrect = async function (inputOtp) {
+  return await bcrypt.compare(inputOtp, this.otp)
+}
+// -------------------------------user profile schema---------------------------------
+
+// ---------------------------------otp bcrpt-----------------------------
 userProfileSchema.pre("save", async function (next) {
   if (!this.isModified("otp") || this.otp === null || this.otp.trim() === '') return next()
   this.otp = await bcrypt.hash(this.otp, 10)
   next()
 })
 
+// ---------------------------------password bcrpt-----------------------------
+// userProfileSchema.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     try {
+    
+//       this.password = await bcrypt.hash(this.password, 10);
+//     } catch (error) {
+//       console.error("Error hashing password:", error);
+//       next(error);
+//     }
+//   } else {
+//     next();
+//   }
+// });
 
-userProfileSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next()
-  this.password = await bcrypt.hash(this.password, 10)
-  next()
-})
 
-
-userRegisterSchema.methods.isOtpCorrect = async function (inputOtp) {
-  return await bcrypt.compare(inputOtp, this.otp)
-}
+// ---------------------------------otp check-----------------------------
 userProfileSchema.methods.isOtpCorrect = async function (inputOtp) {
-  return await bcrypt.compare(inputOtp, this.otp)
+  return await bcrypt.compare(inputOtp, this.otp) 
 }
+
+// ---------------------------------password check-----------------------------
 userProfileSchema.methods.isPasswordCorrect = async function (password) {
+  console.log(this.password)
   return await bcrypt.compare(password, this.password)
 }
 

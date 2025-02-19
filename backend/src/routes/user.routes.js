@@ -8,7 +8,6 @@ import {
   forgetPassword,
   resetPassword,
 } from "../controllers/user.controller.js"
-import { sendMail } from "../utils/utils/NodeMailer.js"
 import { VerifyOtp } from "../controllers/user.controller.js"
 const router = Router()
 
@@ -17,7 +16,7 @@ router.post(
   upload.fields([{ name: "avatar", maxCount: 1 }]),
   registerUser
 )
-router.post("/sendMail", sendMail)
+
 router.post("/verifyOtp", VerifyOtp)
 router.get("/login", loginUser)
 router.get("/logout", logoutUser)
