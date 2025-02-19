@@ -6,7 +6,7 @@ const router = Router()
 
 router.get("/gete", async (req, res) => {
   try {
-    const newData = await testModel.create({ data: "Some data", value: 42 })
+    const newData = await testModel.create({ data: "Some data", value: 460 })
     console.log("Data saved successfully!", newData)
     res.status(200).json(newData)
 
