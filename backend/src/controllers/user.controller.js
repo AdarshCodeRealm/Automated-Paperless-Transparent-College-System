@@ -2,9 +2,13 @@ import {
   userProfile as userModel,
   registerUser as userRegisterModel,
 } from "../models/user.model.js"
-import { sendMail } from "../utils/utils/NodeMailer.js"
+import {
+  sendOtpVerificationMail,
+  sendResetPasswordMail,
+} from "../utils/utils/NodeMailer.js"
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
-
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await userModel.findById(userId)
@@ -28,16 +32,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
 }
 
 const registerUser = async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    role,
-    mobile,
-    bio,
-    electionCandidate,
-    department,
-  } = req.body
+  const { name, email, password, role, mobile, bio, department } = req.body
 
   const checkUserIsExist = await userModel.findOne({ email })
   if (checkUserIsExist) {
@@ -46,6 +41,15 @@ const registerUser = async (req, res) => {
       message: `User already exist with email : ${email}`,
     })
   }
+  const checkregister = await userRegisterModel.findOne({ email })
+  if (checkregister) {
+    return res.status(400).json({
+      status: "Failed to register user",
+      message: `Registration already exist with email : ${email}, check your email for otp `,
+      inProcess: true,
+    })
+  }
+
   let avatarLocalPath,
     avatar = null
 
@@ -57,7 +61,7 @@ const registerUser = async (req, res) => {
   try {
     // Send verification email
     const OTP = Math.floor(Math.random() * 1000000)
-    await sendMail(email, OTP)
+    await sendOtpVerificationMail(email, OTP)
 
     const user = await userRegisterModel.create({
       name,
@@ -67,11 +71,10 @@ const registerUser = async (req, res) => {
       mobile,
       avatar: avatar != null ? avatar.url : "",
       role,
-      electionCandidate,
       department,
-      expireAt: new Date(Date.now() + 1 * 60 * 1000),
       otp: OTP,
     })
+
     const createdUser = await userRegisterModel
       .findById(user._id)
       .select("-password ")
@@ -93,15 +96,16 @@ const registerUser = async (req, res) => {
 const VerifyOtp = async (req, res) => {
   const { email, otp } = req.body
   try {
-    const user = await userRegisterModel.findOne({ email: email })
+    const user = await userRegisterModel.findOne({ email })
+    console.log("user", user)
     if (!user) {
       return res.status(400).json({
         status: "Failed to verify otp",
         message: "User not found",
       })
     }
-
-    if (user.otp != otp) {
+    const otpcheck = user.isOtpCorrect(otp)
+    if (!otpcheck) {
       return res.status(400).json({
         status: "Failed to verify otp",
         message: "Invalid OTP",
@@ -142,22 +146,21 @@ const VerifyOtp = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body
-
   if (!password && !email) {
     throw new ApiError(400, `email or password is required : ${email}`)
   }
-
   const user = await userModel
     .findOne({ email })
     .select(["-password ", "-refreshToken"])
-
   if (!user) {
     return res.status(400).json({
       status: "Failed to login",
       message: "User not found",
     })
   }
+
   const isMatch = await user.isPasswordCorrect(password)
+  console.log("isMatch", isMatch)
 
   if (!isMatch) {
     return res.status(400).json({
@@ -195,40 +198,46 @@ const loginUser = async (req, res) => {
 }
 
 const logoutUser = async (req, res) => {
-  await userModel.findByIdAndUpdate(
-    req.user._id,
-    {
-      $unset: {
-        refreshToken: 1, // this removes the field from document
-      },
-    },
-    {
-      new: true,
+  try {
+    const { email } = req.body
+    const userExist = await userModel.findOne({ email })
+    if (!userExist) {
+      return res.status(404).json({ message: "User not found" })
     }
-  )
 
-  const options = {
-    httpOnly: true,
-    secure: true,
+    const updatedUser = await userModel.updateOne(
+      { email },
+      { $unset: { refreshToken: 1 } },
+      { new: true }
+    )
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    }
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", "", options)
+      .clearCookie("refreshToken", "", options)
+      .json({ message: "User logged Out Successfully" })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: "Internal server error", error: err })
   }
-
-  return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"))
 }
 
 const getCurrentUser = async (req, res) => {
   const accessToken = req.cookies.accessToken
-
+  console.log("accessToken", accessToken)
   if (!accessToken) {
     return res.status(401).json({ message: "Unauthorized" })
   }
 
   try {
     const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
-    const user = await userProfile.findById(decoded._id)
+    console.log(decoded)
+    const user = await userModel.findById(decoded._id)
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
@@ -251,7 +260,7 @@ const forgetPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" })
     }
     const OTP = Math.floor(Math.random() * 1000000)
-    await sendMail(email, OTP)
+    await sendOtpVerificationMail(email, OTP)
 
     user.otp = OTP
     await user.save({ validateBeforeSave: false })
@@ -265,22 +274,20 @@ const forgetPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body
-
   try {
     const user = await userModel.findOne({ email })
-
     if (!user) {
       return res.status(404).json({ message: "User not found" })
     }
-
-    if (user.otp !== otp) {
+    const otpcheck = user.isOtpCorrect(otp)
+    if (!otpcheck) {
       return res.status(400).json({ message: "Invalid OTP" })
     }
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-    user.password = newPassword
+    user.password = hashedPassword
     user.otp = null
     await user.save({ validateBeforeSave: false })
-
     return res.status(200).json({ message: "Password reset successfully" })
   } catch (err) {
     console.log(err)
@@ -288,4 +295,12 @@ const resetPassword = async (req, res) => {
   }
 }
 
-export { registerUser, VerifyOtp, loginUser, logoutUser, getCurrentUser,resetPassword ,forgetPassword}
+export {
+  registerUser,
+  VerifyOtp,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  resetPassword,
+  forgetPassword,
+}
