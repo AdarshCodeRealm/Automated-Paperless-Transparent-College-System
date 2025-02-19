@@ -31,34 +31,14 @@ app.use(cookieParser())
 
 
 app.use("/applicationAndApprovalSystem", applicationAndApprovalSystemRouter)
-
-
 app.use("/budgetAndSponsorshipTracking", budgetAndSponsorshipTrackingRouter)
-
-
 app.use("/complaint", complaintRouter)
-
-
 app.use("/election", electionRouter)
-
-
 app.use("/facilityBooking", facilityBookingRouter)
-
-
 app.use("/healthAndLeaveNotify", healthAndLeaveNotifyRouter)
-
-
 app.use("/integrityAndCheatingRecord", integrityAndCheatingRecordRouter)
-
-
 app.use("/test", testRouter)
-
-
 app.use('/election', electionRoutes);
-
-
-
 app.use("/user", userRouter)
-
 
 export {app}

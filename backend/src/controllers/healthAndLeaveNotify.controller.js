@@ -115,4 +115,4 @@
         }
     };
 
-    export  {getStudents,getStudentbyId,createstudent,createHealthRecord,gethealthrecordbystudentid,createLeaveRecord,getLeaverecordbystudentid}
+    export  {getStudents,getStudentbyId,createstudent,createHealthRecord,gethealthrecordbystudentid,createLeaveRecord,getLeaverecordbystudentid,getNotifications,reportSickRoute,studentLeavesCampusRoute}

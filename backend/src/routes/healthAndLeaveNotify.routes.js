@@ -1,9 +1,6 @@
-import express from 'express';
 import { Router } from 'express';
-import {getStudents,getStudentbyId,createstudent,createHealthRecord,gethealthrecordbystudentid,createLeaveRecord,getLeaverecordbystudentid} from "../controllers/healthAndLeaveNotify.controller.js"
-import sendEmail from "../middlewares/sendmail.middleware.js" 
-import reportSick from '../middlewares/reportsick.middleware.js';
-import studentLeavesCampus from '../middlewares/studentleavecampus.middleware.js';
+import {getStudents,getStudentbyId,createstudent,createHealthRecord,gethealthrecordbystudentid,createLeaveRecord,getLeaverecordbystudentid,getNotifications,reportSickRoute,studentLeavesCampusRoute} from "../controllers/healthAndLeaveNotify.controller.js"
+
 
 const router = Router();
 
@@ -15,9 +12,9 @@ router.post('/health-records',createHealthRecord);//Health records routes
 router.get('/health-records/student/:studentId',gethealthrecordbystudentid);//get health records
 router.post('/leave-records',createLeaveRecord);
 router.get('/leave-records/student/:studentId',getLeaverecordbystudentid);//get leave records
-router.get('/notifications',sendEmail);//notification routes
-router.put('/notifications/:id/sent', sendEmail);
-router.post('/report-sick', reportSick);// Automated Notification Trigger Routes (Crucial!)
-router.post('/student-leaves', studentLeavesCampus);
+router.get('/notifications',getNotifications);//notification routes
+router.put('/notifications/:id/sent', getNotifications);
+router.post('/report-sick', reportSickRoute);// Automated Notification Trigger Routes (Crucial!)
+router.post('/student-leaves', studentLeavesCampusRoute);
 
 export default router;
