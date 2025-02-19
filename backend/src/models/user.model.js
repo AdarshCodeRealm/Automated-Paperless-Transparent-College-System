@@ -46,13 +46,16 @@ const userProfileSchema = new mongoose.Schema(
     },
     otp: {
       type: String,
-      required: [true, "OTP is required"],
+      default: "",
     },
   },
   {
     timestamps: true,
   }
 )
+
+
+
 
 const userRegisterSchema = new mongoose.Schema(
   {
@@ -111,7 +114,8 @@ const userRegisterSchema = new mongoose.Schema(
   }
 )
 
-userRegisterSchema.index({ expireAt: 1 }, { expireAfterSeconds: 60 })
+// userRegisterSchema.index({ expireAt: 1 }, { expireAfterSeconds: 60 })
+
 
 userProfileSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
@@ -146,26 +150,37 @@ userProfileSchema.methods.generateAccessToken = function () {
 
 userRegisterSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next()
-
-  this.password = await bcrypt.hash(this.password, 900)
+  this.password = await bcrypt.hash(this.password, 10)
+  next()
+})
+userRegisterSchema.pre("save", async function (next) {
+  if (!this.isModified("otp")) return next()
+  this.otp = await bcrypt.hash(this.otp, 10)
+  next()
+})
+userProfileSchema.pre("save", async function (next) {
+  if (!this.isModified("otp") || this.otp === null || this.otp.trim() === '') return next()
+  this.otp = await bcrypt.hash(this.otp, 10)
   next()
 })
 
-// userRegisterSchema.pre("save", async function (next) {
-//   if (!this.isModified("otp")) return next()
 
-//   this.otp = await bcrypt.hash(this.otp, 10)
-//   next()
-// })
+userProfileSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next()
+  this.password = await bcrypt.hash(this.password, 10)
+  next()
+})
+
 
 userRegisterSchema.methods.isOtpCorrect = async function (inputOtp) {
+  return await bcrypt.compare(inputOtp, this.otp)
+}
+userProfileSchema.methods.isOtpCorrect = async function (inputOtp) {
   return await bcrypt.compare(inputOtp, this.otp)
 }
 userProfileSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password)
 }
-
-
 
 const registerUser = mongoose.model("userRegister", userRegisterSchema)
 const userProfile = mongoose.model("userProfile", userProfileSchema)

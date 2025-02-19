@@ -4,7 +4,7 @@ import {
 } from "../models/user.model.js"
 import { sendMail } from "../utils/utils/NodeMailer.js"
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
-
+import jwt from "jsonwebtoken"
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await userModel.findById(userId)
@@ -28,16 +28,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
 }
 
 const registerUser = async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    role,
-    mobile,
-    bio,
-    electionCandidate,
-    department,
-  } = req.body
+  const { name, email, password, role, mobile, bio, department } = req.body
 
   const checkUserIsExist = await userModel.findOne({ email })
   if (checkUserIsExist) {
@@ -58,7 +49,7 @@ const registerUser = async (req, res) => {
     // Send verification email
     const OTP = Math.floor(Math.random() * 1000000)
     await sendMail(email, OTP)
-
+    console.log("before user ..........")
     const user = await userRegisterModel.create({
       name,
       email,
@@ -67,11 +58,11 @@ const registerUser = async (req, res) => {
       mobile,
       avatar: avatar != null ? avatar.url : "",
       role,
-      electionCandidate,
       department,
-      expireAt: new Date(Date.now() + 1 * 60 * 1000),
       otp: OTP,
     })
+
+    console.log("req.body", req.body)
     const createdUser = await userRegisterModel
       .findById(user._id)
       .select("-password ")
@@ -100,8 +91,8 @@ const VerifyOtp = async (req, res) => {
         message: "User not found",
       })
     }
-
-    if (user.otp != otp) {
+    const otpcheck = user.isOtpCorrect(otp)
+    if (!otpcheck) {
       return res.status(400).json({
         status: "Failed to verify otp",
         message: "Invalid OTP",
@@ -195,17 +186,23 @@ const loginUser = async (req, res) => {
 }
 
 const logoutUser = async (req, res) => {
-  await userModel.findByIdAndUpdate(
-    req.user._id,
-    {
-      $unset: {
-        refreshToken: 1, // this removes the field from document
-      },
-    },
-    {
-      new: true,
+  try {
+    const { email } = req.body
+    const userExist = await userModel.findOne({ email })
+    if (!userExist) {
+      return res.status(404).json({ message: "User not found" })
     }
-  )
+
+    const updatedUser = await userModel.updateOne(
+      { email },
+      { $unset: { refreshToken: 1 } },
+      { new: true }
+    )
+    res.status(200).json({ message: "User logged out successfully" })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: "Internal server error", error: err })
+  }
 
   const options = {
     httpOnly: true,
@@ -221,14 +218,15 @@ const logoutUser = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   const accessToken = req.cookies.accessToken
-
+  console.log("accessToken", accessToken)
   if (!accessToken) {
     return res.status(401).json({ message: "Unauthorized" })
   }
 
   try {
     const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
-    const user = await userProfile.findById(decoded._id)
+    console.log(decoded)
+    const user = await userModel.findById(decoded._id)
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
@@ -265,22 +263,18 @@ const forgetPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body
-
   try {
     const user = await userModel.findOne({ email })
-
     if (!user) {
       return res.status(404).json({ message: "User not found" })
     }
-
-    if (user.otp !== otp) {
+    const otpcheck = user.isOtpCorrect(otp)
+    if (!otpcheck) {
       return res.status(400).json({ message: "Invalid OTP" })
     }
-
     user.password = newPassword
     user.otp = null
     await user.save({ validateBeforeSave: false })
-
     return res.status(200).json({ message: "Password reset successfully" })
   } catch (err) {
     console.log(err)
@@ -288,4 +282,12 @@ const resetPassword = async (req, res) => {
   }
 }
 
-export { registerUser, VerifyOtp, loginUser, logoutUser, getCurrentUser,resetPassword ,forgetPassword}
+export {
+  registerUser,
+  VerifyOtp,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  resetPassword,
+  forgetPassword,
+}
