@@ -1,10 +1,9 @@
-import mongoose,{Schema} from 'mongoose';
-import User from '../models/user.model.js'
+import mongoose from 'mongoose';
 
 //student schema
-const student = new Schema({
+const student = new mongoose.Schema({
     studentname:{
-        type:Schema.ObjectId.name,
+        type:mongoose.Schema.ObjectId, //ithe change karava lagtil
         ref:"User",
         required:true
     },
@@ -14,7 +13,7 @@ const student = new Schema({
         unique:true
     },
     studentemail:{
-        type:Schema.ObjectId.email,
+        type:mongoose.Schema.ObjectId,//same
         required:true,
         unique:true
     },
@@ -31,9 +30,9 @@ const student = new Schema({
 const Student= mongoose.model('Student', student);
 
 //schema for health records
-const healthrecord = new Schema({
+const healthRecord = new mongoose.Schema({
     student:{
-        type:Schema.ObjectId.name,
+        type:mongoose.Schema.ObjectId,//same
         ref:"Student",
         required:true
     },
@@ -49,7 +48,7 @@ const healthrecord = new Schema({
         type:Number,
         required:true
     },
-    reportedby:{
+    reportedBy:{
         type:String,
         enum:['Doctor','Self','Teacher'],
         required:true
@@ -59,11 +58,11 @@ const healthrecord = new Schema({
     }
 });
 
-const HealthRecord= mongoose.model('HealthRecord', healthrecord);
+const HealthRecord= mongoose.model('HealthRecord', healthRecord);
 
-const leaverecord = new Schema({
+const leaveRecord = new mongoose.Schema({
     student:{
-        type:Schema.ObjectId.name,
+        type:mongoose.Schema.ObjectId,
         ref:"Student",
         required:true
     },
@@ -82,16 +81,16 @@ const leaverecord = new Schema({
     // }
 });
 
-const LeaveRecord= mongoose.model('LeaveRecord', leaverecord);
+const LeaveRecord= mongoose.model('LeaveRecord', leaveRecord);
 
-const notification = new Schema({
+const notification = new mongoose.Schema({
     type:{
         type:String,
-        enum:['sick','leave'],
+        enum:['Sick','Leave'],
         required:true
     },
     student:{
-        type:Schema.ObjectId.name,
+        type:mongoose.Schema.ObjectId,
         ref:"Student",
         required:true
     },
@@ -107,5 +106,5 @@ const notification = new Schema({
 
 const Notification= mongoose.model('Notification', notification);
 
-export default {Student,HealthRecord,LeaveRecord,Notification};
+export {Student,HealthRecord,LeaveRecord,Notification};
 
