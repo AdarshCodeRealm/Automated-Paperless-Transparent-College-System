@@ -5,6 +5,7 @@
 
 
     import {Booking,Facility,User} from "../models/facility.model.js"
+    import bcrypt from "bcrypt"
 
     const bookingController = {
         createBooking: async(req,res)=>{
