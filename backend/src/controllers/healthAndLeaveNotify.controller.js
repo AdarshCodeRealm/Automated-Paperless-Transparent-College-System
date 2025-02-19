@@ -4,15 +4,16 @@
 
     import {Student,HealthRecord,LeaveRecord,Notification} from '../models/healthandleave.models.js'
 
+//student createion
     const getStudents = async(req,res)=>{
-        // try {
-        //     const students = await Student.find();
-        //     res.json(students);
-        // } catch (error) {
-        //     console.log("failed to get student",error);
-        //     res.status(500).json({messgae:"server error"});
-        // }
-        res.send("its working")
+        try {
+            const students = await Student.find();
+            res.json(students);
+        } catch (error) {
+            console.log("failed to get student",error);
+            res.status(500).json({messgae:"server error"});
+        }
+        
     };
 
     const getStudentbyId = async(req,res) => {
@@ -37,7 +38,7 @@
             res.status(500).json({message:"server error"});
         }
     };
-
+//health
     const createHealthRecord = async(req,res)=>{
         try {
             const newrecord = new HealthRecord(req.body);
@@ -59,7 +60,7 @@
             res.status(500).json({message:"Server error"});
         }
     };
-
+//leave
     const createLeaveRecord = async(req,res)=>{
         try {
             const newrecord = new LeaveRecord(req.body);
@@ -81,7 +82,7 @@
             res.status(500).json({message:"Server error"});
         }
     };
-
+//notfication
     const getNotifications = async (req, res) => {
         try {
             const notifications = await Notification.find().populate('student');

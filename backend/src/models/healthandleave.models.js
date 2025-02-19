@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
+import { type } from 'os';
 
 //student schema
 const student = new mongoose.Schema({
     studentname:{
-        type:mongoose.Schema.ObjectId, //ithe change karava lagtil
-        ref:"User",
+        type:mongoose.Schema.ObjectId,
+        ref:"userProfile",
         required:true
     },
     StudentId:{
@@ -13,7 +14,7 @@ const student = new mongoose.Schema({
         unique:true
     },
     studentemail:{
-        type:mongoose.Schema.ObjectId,//same
+        type:mongoose.Schema.ObjectId,
         required:true,
         unique:true
     },
@@ -26,14 +27,14 @@ const student = new mongoose.Schema({
         required:true
     }
 });
-
 const Student= mongoose.model('Student', student);
 
 //schema for health records
 const healthRecord = new mongoose.Schema({
     student:{
-        type:mongoose.Schema.ObjectId,//same
-        ref:"Student",
+        // type:mongoose.Schema.ObjectId,//same
+        // ref:"Student",
+        type:String,
         required:true
     },
     date:{
@@ -57,7 +58,6 @@ const healthRecord = new mongoose.Schema({
         type:String
     }
 });
-
 const HealthRecord= mongoose.model('HealthRecord', healthRecord);
 
 const leaveRecord = new mongoose.Schema({
@@ -80,7 +80,6 @@ const leaveRecord = new mongoose.Schema({
     //     default:'Pending'
     // }
 });
-
 const LeaveRecord= mongoose.model('LeaveRecord', leaveRecord);
 
 const notification = new mongoose.Schema({
@@ -103,7 +102,6 @@ const notification = new mongoose.Schema({
         required:true
     },
 });
-
 const Notification= mongoose.model('Notification', notification);
 
 export {Student,HealthRecord,LeaveRecord,Notification};
