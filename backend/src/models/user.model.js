@@ -1,24 +1,3 @@
-// import mongoose from 'mongoose';
-
-// const userSchema = new mongoose.Schema({
-//     name:{type: String ,required:true},
-//     email:{type:String, required:true,unique:true},
-//     password:{type:String,required:true},
-//     role:{type:String, enum:['student','admin','candidate'],default:'student'},
-
-//     // position:{
-//     //     type:String,
-//     //     required:function(){return this.role ==='candidate'}
-//     // },
-
-//     // votes:{
-//     //     type:Number,
-//     //     default:0,
-//     //     required:function(){return this.role ==='candidate'}
-//     // },
-// });
-
-// export default mongoose.model('User',userSchema)
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -171,13 +150,6 @@ userRegisterSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 900)
   next()
 })
-
-// userRegisterSchema.pre("save", async function (next) {
-//   if (!this.isModified("otp")) return next()
-
-//   this.otp = await bcrypt.hash(this.otp, 10)
-//   next()
-// })
 
 userRegisterSchema.methods.isOtpCorrect = async function (inputOtp) {
   return await bcrypt.compare(inputOtp, this.otp)

@@ -4,17 +4,17 @@
     // ● Live result tracking for transparency.
 
     // election.controller.js
-import User from '../models/user.model.js';
+import {userProfile,registerUser} from '../models/user.model.js';
 import Candidate from '../models/candidate.model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // User Controllers
-const registerUser = async (req, res) => {
+const userRegister = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await userRegister.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'Email already exists' });
         }
@@ -34,7 +34,7 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await registerUser.findOne({ email });
         if (!user) {
             return res.status(400).json({ error: 'Invalid email or password' });
         }
@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        const user = await userProfile.findById(req.user.id).select('-password');
         res.json(user);
     } catch (err) {
         console.error("Profile Error:", err);
@@ -67,7 +67,7 @@ const getProfile = async (req, res) => {
 // Candidate Controllers
 const registerCandidate = async (req, res) => {
     try {
-        const { name, position, manifesto, image } = req.body;
+        const { name, position} = req.body;
 
         const newCandidate = new Candidate({
             name,
@@ -97,7 +97,7 @@ const castVote = async (req, res) => {
     try {
         const { candidateId } = req.body;
 
-        const user = await User.findById(req.user.id);
+        const user = await Candidate.findById(req.user.id);
         if (!user) {
             return res.status(400).json({ message: "User not found." });
         }
@@ -133,26 +133,10 @@ const getLiveResults = async (req, res) => {
     }
 };
 
-// Authentication middleware (keep this in the controller or a separate auth middleware file)
-// function authenticate(req, res, next) {
-//     const token = req.header('Authorization')?.split(' ')[1];
-
-//     if (!token) {
-//         return res.status(401).json({ error: 'No token, authorization denied' });
-//     }
-
-//     try {
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//         req.user = decoded;
-//         next();
-//     } catch (err) {
-//         res.status(401).json({ error: 'Token is not valid' });
-//     }
-// }
 
 
-export default {
-    registerUser,
+export {
+    userRegister,
     loginUser,
     getProfile,
     registerCandidate,

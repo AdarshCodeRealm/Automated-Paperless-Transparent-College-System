@@ -5,13 +5,14 @@
     import {Student,HealthRecord,LeaveRecord,Notification} from '../models/healthandleave.models.js'
 
     const getStudents = async(req,res)=>{
-        try {
-            const students = await Student.find();
-            res.json(students);
-        } catch (error) {
-            console.log("failed to get student",error);
-            res.status(500).json({messgae:"server error"});
-        }
+        // try {
+        //     const students = await Student.find();
+        //     res.json(students);
+        // } catch (error) {
+        //     console.log("failed to get student",error);
+        //     res.status(500).json({messgae:"server error"});
+        // }
+        res.send("its working")
     };
 
     const getStudentbyId = async(req,res) => {
@@ -113,4 +114,4 @@
         }
     };
 
-    export default {getStudents,getStudentbyId,createstudent,createHealthRecord,gethealthrecordbystudentid,createLeaveRecord,getLeaverecordbystudentid,ri}
+    export  {getStudents,getStudentbyId,createstudent,createHealthRecord,gethealthrecordbystudentid,createLeaveRecord,getLeaverecordbystudentid}

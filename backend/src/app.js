@@ -4,6 +4,17 @@ import Cors from "cors"
 import dotenv from "dotenv"
 dotenv.config({ path: "./.env" })
 
+import applicationAndApprovalSystemRouter from "./routes/applicationAndApprovalSystem.routes.js"
+import budgetAndSponsorshipTrackingRouter from "./routes/budgetAndSponsorshipTracking.routes.js"
+import complaintRouter from "./routes/complaint.routes.js"
+import electionRouter from "./routes/election.routes.js"
+import facilityBookingRouter from "./routes/facilityBooking.routes.js"
+import healthAndLeaveNotifyRouter from "./routes/healthAndLeaveNotify.routes.js"
+import integrityAndCheatingRecordRouter from "./routes/integrityAndCheatingRecord.routes.js"
+import testRouter from "./routes/test.route.js"
+import electionRoutes from './routes/election.routes.js'
+import userRouter from "./routes/user.routes.js"
+
 const app = express()
 app.use(
   Cors({
@@ -18,35 +29,35 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 
-import applicationAndApprovalSystemRouter from "./routes/applicationAndApprovalSystem.routes.js"
+
 app.use("/applicationAndApprovalSystem", applicationAndApprovalSystemRouter)
 
-import budgetAndSponsorshipTrackingRouter from "./routes/budgetAndSponsorshipTracking.routes.js"
+
 app.use("/budgetAndSponsorshipTracking", budgetAndSponsorshipTrackingRouter)
 
-import complaintRouter from "./routes/complaint.routes.js"
+
 app.use("/complaint", complaintRouter)
 
-import electionRouter from "./routes/election.routes.js"
+
 app.use("/election", electionRouter)
 
-import facilityBookingRouter from "./routes/facilityBooking.routes.js"
+
 app.use("/facilityBooking", facilityBookingRouter)
 
-import healthAndLeaveNotifyRouter from "./routes/healthAndLeaveNotify.routes.js"
+
 app.use("/healthAndLeaveNotify", healthAndLeaveNotifyRouter)
 
-import integrityAndCheatingRecordRouter from "./routes/integrityAndCheatingRecord.routes.js"
+
 app.use("/integrityAndCheatingRecord", integrityAndCheatingRecordRouter)
 
-import testRouter from "./routes/test.route.js"
+
 app.use("/test", testRouter)
 
-import electionRoutes from './routes/election.routes.js'
+
 app.use('/election', electionRoutes);
 
 
-import userRouter from "./routes/user.routes.js"
+
 app.use("/user", userRouter)
 
 

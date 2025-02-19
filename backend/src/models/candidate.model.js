@@ -1,9 +1,10 @@
 import mongoose,{Schema} from "mongoose";
-import {userProfile} from "../models/user.model.js"
+import { userProfile,registerUser } from "../models/user.model.js";
 
 const candidateSchema = new Schema({
-    name:{type:Schema.Types.ObjectId,
-        ref:"User",
+    name:{
+        type:Schema.Types.ObjectId,
+        ref:"userProfile",
         required:true
     },
     position:{type:String,required:true},
