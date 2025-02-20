@@ -102,7 +102,7 @@ const notification = new mongoose.Schema({
         required:true
     },
 });
-const Notification= mongoose.model('Notification', notification);
+const Notifications= mongoose.model('Notifications', notification);
 
-export {Student,HealthRecord,LeaveRecord,Notification};
+export {Student,HealthRecord,LeaveRecord,Notifications};
 

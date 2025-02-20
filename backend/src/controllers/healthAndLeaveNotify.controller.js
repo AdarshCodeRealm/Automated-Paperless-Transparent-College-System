@@ -2,7 +2,7 @@
     // ● If a student is reported sick by the college doctor, an automatic email is sent to the respective class coordinator.
     // ● If a student leaves campus, an automated email is sent to their parents for safety tracking.
 
-    import {Student,HealthRecord,LeaveRecord,Notification} from '../models/healthandleave.models.js'
+    import {Student,HealthRecord,LeaveRecord,Notifications} from '../models/healthandleave.models.js'
 
 //student createion
     const getStudents = async(req,res)=>{
@@ -85,7 +85,7 @@
 //notfication
     const getNotifications = async (req, res) => {
         try {
-            const notifications = await Notification.find().populate('student');
+            const notifications = await Notifications.find().populate('student');
             res.json(notifications);
         } catch (error) {
             console.error("Error getting notifications:", error);

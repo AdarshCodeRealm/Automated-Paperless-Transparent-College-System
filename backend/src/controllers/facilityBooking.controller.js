@@ -30,7 +30,7 @@
         },
         getAllBookings:async(req,res)=>{
             try{
-                const bookings = await Booking.find().populate('facility User');
+                const bookings = await Booking.find();
                 res.status(201).json(bookings);
             }catch(error){
                 console.log("failed to get bookings",error);
