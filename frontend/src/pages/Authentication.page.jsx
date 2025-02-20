@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,13 +21,7 @@ import bgImage from "../assets/loginscreen-bg.jpg"
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
-  /*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * AuthPage component.
-   *
-   * @returns {JSX.Element}
-   */
-  /******  44047a2a-99e2-434e-a785-d93c1b9b52f9  *******/ const [
+const [
     showForgotPassword,
     setShowForgotPassword,
   ] = useState(false)
@@ -73,7 +65,7 @@ export default function AuthPage() {
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-blue-500" />
           <span className="text-xl font-semibold text-white">
-            Anywhere app.
+           HackFusion 2025
           </span>
         </div>
         <div className="space-x-4">
@@ -135,12 +127,12 @@ export default function AuthPage() {
                   className="flex-grow bg-black/20 border-white/10 focus:border-blue-500 text-white placeholder:text-gray-500"
                 />
                 {!isLogin && (
-                 <Button
-                 type="button"
-                 className={`${glassyButtonClass} px-3 py-2`}
-               >
-                 <UserCircle className="w h-5" />
-               </Button>
+                  <Button
+                    type="button"
+                    className={`${glassyButtonClass} px-3 py-2`}
+                  >
+                    <UserCircle className="w h-5" />
+                  </Button>
                 )}
               </div>
             </div>
@@ -175,8 +167,6 @@ export default function AuthPage() {
               >
                 {isLogin ? "Login" : "Create account"}
               </Button>
-
-              
             </div>
 
             {isLogin && (
