@@ -65,7 +65,7 @@ const [
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-blue-500" />
           <span className="text-xl font-semibold text-white">
-           HackFusion 2025
+            HackFusion 2025
           </span>
         </div>
         <div className="space-x-4">

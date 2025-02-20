@@ -4,7 +4,7 @@ export default function CollegeConnect() {
   return (
     <main className="container mx-auto px-4 py-12 max-w-6xl">
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to CollegeConnect</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to College Connect</h1>
         <p className="text-lg text-gray-600">Your one-stop solution for a better college experience.</p>
       </div>
 
