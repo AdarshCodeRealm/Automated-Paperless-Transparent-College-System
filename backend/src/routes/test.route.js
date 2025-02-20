@@ -1,6 +1,5 @@
 import { Router } from "express"
 import testModel from "../models/test.model.js"
-import { raiseComplaint } from "../controllers/complaint.controller.js"
 
 const router = Router()
 
