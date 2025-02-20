@@ -92,8 +92,8 @@ const voters = [
 ]
 
 export default function ElectionDashboard() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [viewType, setViewType] = useState<"table" | "graph">("table")
+  const [date, setDate] = useState(new Date())
+  const [viewType, setViewType] = useState("table")
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
@@ -101,6 +101,7 @@ export default function ElectionDashboard() {
         <Card className="bg-primary">
           <CardHeader className="space-y-1 text-white">
             <CardTitle className="text-2xl font-bold">SRC/NUGS 2024 ELECTIONS</CardTitle>
+            <Button className="text-1xl font-bold align-right">Cast</Button> 
             <p className="text-primary-foreground/80">17,000 registered voters</p>
           </CardHeader>
         </Card>
