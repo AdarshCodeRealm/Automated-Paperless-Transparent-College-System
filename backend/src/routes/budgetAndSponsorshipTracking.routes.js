@@ -38,11 +38,6 @@ router
   .put(upload.fields([{ name: "proofImage", maxCount: 1 }]), updateExpense) //compulsory to update image proof
   .delete(deleteExpense)
 
-
-
-
-
-
 router.post(
   "/sponsorship",
   verifyJWT,
