@@ -10,7 +10,6 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/elections" element={<ElectionPage />} />
       </Routes>
-      
     </>
   )
 }
