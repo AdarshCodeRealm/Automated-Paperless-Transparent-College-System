@@ -7,7 +7,7 @@ const connectDB = async () => {
   try {
     console.log("Connecting to MongoDB...",)
     const connectionPromise = await mongoose.connect(
-        `${process.env.MONGODB_URI}/${DB_NAME}`
+        `mongodb+srv://adarshramgirwar:ramgirwar123@cluster0.4cobv.mongodb.net/${DB_NAME}`
     )
     console.log("MongoDB connected successfully.")
     console.log("run on host :", connectionPromise.connection.host)

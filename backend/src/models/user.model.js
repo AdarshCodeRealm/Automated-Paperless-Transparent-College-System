@@ -114,7 +114,11 @@ const userRegisterSchema = new mongoose.Schema(
   }
 )
 
+<<<<<<< HEAD
 // userRegisterSchema.index({ expireAt: 1 }, { expireAfterSeconds: 60 })
+=======
+userRegisterSchema.index({ expireAt: 1 }, { expireAfterSeconds: 900 })
+>>>>>>> 017310c3d1832183b620a8722f2b60f014861026
 
 
 userProfileSchema.methods.generateRefreshToken = function () {
@@ -156,6 +160,7 @@ userRegisterSchema.pre("save", async function (next) {
 userRegisterSchema.pre("save", async function (next) {
   if (!this.isModified("otp")) return next()
   this.otp = await bcrypt.hash(this.otp, 10)
+<<<<<<< HEAD
   next()
 })
 userProfileSchema.pre("save", async function (next) {
@@ -171,13 +176,51 @@ userProfileSchema.pre("save", async function (next) {
   next()
 })
 
+=======
+  next()
+})
+>>>>>>> 017310c3d1832183b620a8722f2b60f014861026
 
 userRegisterSchema.methods.isOtpCorrect = async function (inputOtp) {
   return await bcrypt.compare(inputOtp, this.otp)
 }
+<<<<<<< HEAD
 userProfileSchema.methods.isOtpCorrect = async function (inputOtp) {
   return await bcrypt.compare(inputOtp, this.otp)
 }
+=======
+// -------------------------------user profile schema---------------------------------
+
+// ---------------------------------otp bcrpt-----------------------------
+userProfileSchema.pre("save", async function (next) {
+  if (!this.isModified("otp") || this.otp === null || this.otp.trim() === '') return next()
+  this.otp = await bcrypt.hash(this.otp, 10)
+  next()
+})
+
+// ---------------------------------password bcrpt-----------------------------
+// userProfileSchema.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     try {
+    
+//       this.password = await bcrypt.hash(this.password, 10);
+//     } catch (error) {
+//       console.error("Error hashing password:", error);
+//       next(error);
+//     }
+//   } else {
+//     next();
+//   }
+// });
+
+
+// ---------------------------------otp check-----------------------------
+userProfileSchema.methods.isOtpCorrect = async function (inputOtp) {
+  return await bcrypt.compare(inputOtp, this.otp) 
+}
+
+// ---------------------------------password check-----------------------------
+>>>>>>> 017310c3d1832183b620a8722f2b60f014861026
 userProfileSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password)
 }
