@@ -21,10 +21,7 @@ import bgImage from "../assets/loginscreen-bg.jpg"
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
-const [
-    showForgotPassword,
-    setShowForgotPassword,
-  ] = useState(false)
+  const [showForgotPassword,setShowForgotPassword] = useState(false)
   const [showOTPVerification, setShowOTPVerification] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 

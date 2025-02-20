@@ -101,9 +101,17 @@ export default function ElectionDashboard() {
         <Card className="bg-primary">
           <CardHeader className="space-y-1 text-white">
             <CardTitle className="text-2xl font-bold">SRC/NUGS 2024 ELECTIONS</CardTitle>
-            <Button className="text-1xl font-bold align-right">Cast</Button> 
+            <div className="flex gap-0.24">
+            <Button className="ml-auto bg-transparent hover:bg-blue-500 text-white-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                Register
+            </Button>
+            <Button className="ml-auto bg-transparent hover:bg-blue-500 text-white-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                Cast Vote
+            </Button>
+            </div>
             <p className="text-primary-foreground/80">17,000 registered voters</p>
           </CardHeader>
+          
         </Card>
 
         {/* Stats Cards */}
