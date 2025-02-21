@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
 import { type } from 'os';
 
 //student schema
@@ -65,15 +65,12 @@ const notification = new mongoose.Schema({
         enum:['Sick','Leave'],
         required:true
     },
-    student:{
+    studentEmail:{
         type:mongoose.Schema.ObjectId,
-        ref:"Student",
+        ref:'Student',
         required:true
     },
-    date:{
-        type:Date,
-        required:true
-    },
+    
     message:{
         type:String,
         required:true

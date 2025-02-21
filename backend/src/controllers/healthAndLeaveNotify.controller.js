@@ -92,27 +92,38 @@
         }
     };
 
-    const reportSickRoute = async (req, res) => { 
+    const reportSickRoute = async (req, res) => {
         try {
             const { studentEmail, reportedBy, diagnosis } = req.body;
-            const saved = await HealthRecord(studentEmail, reportedBy, diagnosis); 
-            await Notification.create({ student: saved._id, type: "Sick Report", message: `${studentEmail} reported sick with ${diagnosis}.` });  // create notification for class coordinator
-            
-            res.json({ message: "Sick report sent" }); 
+    
+            const newHealthRecord = new HealthRecord({ studentEmail, reportedBy, diagnosis }); // Correct way to create a new document
+            const savedHealthRecord = await newHealthRecord.save(); // Save the document
+    
+            await Notification.create({ student: savedHealthRecord._id, type: "Sick", message: `${studentEmail} reported sick with ${diagnosis}.` })
+                .catch(notificationError => {
+                    console.error("Error creating notification:", notificationError);
+                });
+    
+            res.json({ message: "Sick report sent" ,savedHealthRecord});
         } catch (error) {
             console.error("Error in reportSickRoute:", error);
-            res.status(500).json({ message: "Server Error" });
+            res.status(500).json({ message: "Server Error", error: error.message }); // More informative error message (dev only)
         }
     };
     
     const studentLeavesCampusRoute = async (req, res) => {
         try {
-            const { studentId } = req.body;
-            await studentLeavesCampusRoute(studentId);
-            res.json({ message: "Leave notification sent"});
+            const { studentEmail, reason } = req.body;
+    
+            const newLeaveRecord = new LeaveRecord({ studentEmail, reason }); // Use student's _id
+            const savedLeaveRecord = await newLeaveRecord.save();
+    
+            await Notification.create({ studentEmail: savedLeaveRecord._id, type: "Leave", message: `${studentEmail} has left campus due to ${reason}.` });
+    
+            res.json({ message: "Leave notification sent", savedLeaveRecord });
         } catch (error) {
-            console.error("Error in studentLeavesCampusRoute", error);
-            res.status(500).json({ message: "Server Error"});
+            console.error("Error in studentLeavesCampusRoute:", error);
+            res.status(500).json({ message: "Server Error" });
         }
     };
 
