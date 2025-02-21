@@ -18,12 +18,18 @@ import {
   Shield,
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
-
+import axios from "axios"
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
-  const [showForgotPassword,setShowForgotPassword] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showOTPVerification, setShowOTPVerification] = useState(false)
+  const [otpSent, setOtpSent] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [name, setName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [otp, setOtp] = useState("") // State for OTP input
 
   const handleForgotPassword = (e) => {
     e.preventDefault()
@@ -32,11 +38,48 @@ export default function AuthPage() {
     setShowOTPVerification(true)
   }
 
-  const handleOTPVerification = (e) => {
+  const handleOTPVerification = async (e) => {
     e.preventDefault()
-    // Handle OTP verification
+    try {
+      const response = await axios.post(
+        "https://hackfusion-2025.onrender.com/user/verifyOtp",
+        {
+          email,
+          otp,
+        }
+      )
+      setEmail("")
+      setPassword("")
+      setName("")
+      setLastName("")
+      setOtp("")
+      setOtpSent(false)
+
+      console.log("User Register successfully:", response.data)
+      // Instead of immediate success, move to OTP verification
+    } catch (error) {
+      console.error("Error signing up:", error.response?.data || error.message)
+      // Handle signup error
+    }
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setOtpSent(true)
+    try {
+      const response = await axios.post(
+        "https://hackfusion-2025.onrender.com/user/register",
+        {
+          name: name + " " + lastName,
+          email,
+          password,
+        }
+      )
+      console.log("User Register successfully:", response.data)
+    } catch (error) {
+      console.error("Error signing up:", error.response?.data || error.message)
+    }
+  }
   const glassyButtonClass =
     "bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 text-white font-semibold rounded-md"
 
@@ -87,7 +130,7 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {!isLogin && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -96,6 +139,9 @@ export default function AuthPage() {
                   </Label>
                   <Input
                     id="firstName"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your first name"
                     className="bg-black/20 border-white/10 focus:border-blue-500 text-white placeholder:text-gray-500"
                   />
@@ -106,6 +152,9 @@ export default function AuthPage() {
                   </Label>
                   <Input
                     id="lastName"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     placeholder="Enter your last name"
                     className="bg-black/20 border-white/10 focus:border-blue-500 text-white placeholder:text-gray-500"
                   />
@@ -120,6 +169,8 @@ export default function AuthPage() {
                 <Input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="m@example.com"
                   className="flex-grow bg-black/20 border-white/10 focus:border-blue-500 text-white placeholder:text-gray-500"
                 />
@@ -140,6 +191,8 @@ export default function AuthPage() {
               <div className="relative">
                 <Input
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   type={showPassword ? "text" : "password"}
                   className="w-full bg-black/20 border-white/10 focus:border-blue-500 text-white pr-10 placeholder:text-gray-500"
                 />
@@ -177,6 +230,33 @@ export default function AuthPage() {
               </Button>
             )}
           </form>
+          {/* ---------- otp verification dialog ------------ */}
+          <Dialog open={otpSent} onOpenChange={setOtpSent}>
+            <DialogContent className="bg-gray-900/80 backdrop-blur-md text-white border-gray-800">
+              <DialogHeader>
+                <DialogTitle>Verify OTP</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleOTPVerification} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="otp">Enter OTP</Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)} // Update otp state
+                    placeholder="Enter OTP"
+                    className="bg-black/20 border-white/10 focus:border-blue-500 text-white"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className={`w-full ${glassyButtonClass} py-2`}
+                >
+                  Verify OTP
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
 
           <div className="mt-6 text-center text-sm">
             <span className="text-gray-400">
