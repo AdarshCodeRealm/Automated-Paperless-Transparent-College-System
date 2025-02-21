@@ -2,7 +2,7 @@
 
 import  { useState } from 'react'
 import { Bell, Moon, Menu, X, Home, Users, FileText, CreditCard, MessageSquare, Video, Settings, HelpCircle } from 'lucide-react'
-import AuthPage from './Authentication.page'
+import Homes from "../pages/Home.jsx"
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -69,7 +69,7 @@ export default function Layout({ children }) {
       <main className="min-h-[calc(100vh-3.5rem)] pt-14 md:ml-64">
         <div className="p-4">
           {/* {children} */}
-          <AuthPage/>
+          <Homes/>
         </div>
       </main>
     </div>

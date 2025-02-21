@@ -4,25 +4,19 @@ import { type } from 'os';
 //student schema
 const student = new mongoose.Schema({
     studentname:{
-        type:mongoose.Schema.ObjectId,
-        ref:"userProfile",
+        type:String,
         required:true
     },
-    StudentId:{
+    studentEmail:{
         type:String,
         required:true,
         unique:true
     },
-    studentemail:{
-        type:mongoose.Schema.ObjectId,
-        required:true,
-        unique:true
-    },
-    parentemail:{
+    parentEmail:{
         type:String,
         required:true
     },
-    classCoordinatoremail:{
+    classCoordinatorEmail:{
         type:String,
         required:true
     }
@@ -31,22 +25,8 @@ const Student= mongoose.model('Student', student);
 
 //schema for health records
 const healthRecord = new mongoose.Schema({
-    student:{
-        // type:mongoose.Schema.ObjectId,//same
-        // ref:"Student",
+    studentEmail:{
         type:String,
-        required:true
-    },
-    date:{
-        type:Date,
-        required:true
-    },
-    weight:{
-        type:Number,
-        required:true
-    },
-    height:{
-        type:Number,
         required:true
     },
     reportedBy:{
@@ -57,29 +37,26 @@ const healthRecord = new mongoose.Schema({
     diagnosis:{
         type:String
     }
-});
+},{
+    timestamps:true
+}
+);
 const HealthRecord= mongoose.model('HealthRecord', healthRecord);
 
 const leaveRecord = new mongoose.Schema({
-    student:{
-        type:mongoose.Schema.ObjectId,
-        ref:"Student",
-        required:true
-    },
-    date:{
-        type:Date,
+    studentEmail:{
+        type:String,
         required:true
     },
     reason:{
         type:String,
         required:true
     },
-    // status:{
-    //     type:String,
-    //     enum:['Pending','Approved','Denied'],
-    //     default:'Pending'
-    // }
-});
+    
+},{
+    timestamps:true
+}
+);
 const LeaveRecord= mongoose.model('LeaveRecord', leaveRecord);
 
 const notification = new mongoose.Schema({

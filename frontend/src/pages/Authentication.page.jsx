@@ -73,6 +73,7 @@ export default function AuthPage() {
           name: name + " " + lastName,
           email,
           password,
+          avatar,
         }
       )
       console.log("User Register successfully:", response.data)

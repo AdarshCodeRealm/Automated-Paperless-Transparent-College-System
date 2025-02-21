@@ -3,7 +3,6 @@
     // ● If a student leaves campus, an automated email is sent to their parents for safety tracking.
 
     import {Student,HealthRecord,LeaveRecord,Notification} from '../models/healthandleave.models.js'
-
 //student createion
     const getStudents = async(req,res)=>{
         try {
@@ -53,7 +52,7 @@
     const gethealthrecordbystudentid = async(req,res) =>{
         try {
             const studentid = req.params.id;
-            const healthrecords = await HealthRecord.find({studentId:studentid}).populate('student');
+            const healthrecords = await HealthRecord.find({studentid:studentid}).populate('studentEmail');
             res.json(healthrecords);
         } catch (error) {
             console.log("Error creating health record",error);
@@ -75,7 +74,7 @@
     const getLeaverecordbystudentid = async(req,res) =>{
         try {
             const studentid = req.params.id;
-            const leaveRecords = await LeaveRecord.find({studentId:studentid}).populate('student');
+            const leaveRecords = await LeaveRecord.find({studentid:studentid}).populate('studentEmail');
             res.json(leaveRecords);
         } catch (error) {
             console.log("Error creating leave record",error);
@@ -95,9 +94,11 @@
 
     const reportSickRoute = async (req, res) => { 
         try {
-            const { studentId, reportedBy, diagnosis } = req.body;
-            await reportSick(studentId, reportedBy, diagnosis); 
-            res.json({ message: "Sick report submitted" }); 
+            const { studentEmail, reportedBy, diagnosis } = req.body;
+            const saved = await HealthRecord(studentEmail, reportedBy, diagnosis); 
+            await Notification.create({ student: saved._id, type: "Sick Report", message: `${studentEmail} reported sick with ${diagnosis}.` });  // create notification for class coordinator
+            
+            res.json({ message: "Sick report sent" }); 
         } catch (error) {
             console.error("Error in reportSickRoute:", error);
             res.status(500).json({ message: "Server Error" });
@@ -107,7 +108,7 @@
     const studentLeavesCampusRoute = async (req, res) => {
         try {
             const { studentId } = req.body;
-            await studentLeavesCampus(studentId);
+            await studentLeavesCampusRoute(studentId);
             res.json({ message: "Leave notification sent"});
         } catch (error) {
             console.error("Error in studentLeavesCampusRoute", error);
