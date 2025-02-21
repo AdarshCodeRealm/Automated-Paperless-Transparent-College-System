@@ -160,7 +160,7 @@ const loginUser = async (req, res) => {
   }
 
   const isMatch = await user.isPasswordCorrect(password)
-  console.log("isMatch", isMatch)
+ 
 
   if (!isMatch) {
     return res.status(400).json({

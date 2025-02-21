@@ -24,12 +24,7 @@ router.route("/toggleUpvote/:complaintId").patch(verifyJWT, toggleUpvote)
 router.route("/toggleDownvote/:complaintId").patch(verifyJWT, toggleDownvote)
 router.route("/").get(getAllComplaints)
 router.delete("/:id", verifyJWT, deleteComplaint)
-
-
-// Create a new comment
 router.post('/comment/:id', verifyJWT,createComment);
-
-// Delete a comment
 router.delete('/comment/:id', verifyJWT, deleteComment);
 
 export default router

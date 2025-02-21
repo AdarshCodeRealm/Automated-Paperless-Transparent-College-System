@@ -19,10 +19,10 @@ router.post(
 
 router.post("/verifyOtp", VerifyOtp)
 router.get("/login", loginUser)
-router.get("/logout", logoutUser)
+router.get("/logout", logoutUser) 
 router.get("/getCurrentUser", getCurrentUser)
 router.get("/forgetPassword", forgetPassword)
-router.post("/resetPassword", resetPassword)
+router.patch("/resetPassword", resetPassword)
 
 
 export default router
