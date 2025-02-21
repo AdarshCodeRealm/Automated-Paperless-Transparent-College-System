@@ -194,7 +194,6 @@ userProfileSchema.methods.isOtpCorrect = async function (inputOtp) {
 
 // ---------------------------------password check-----------------------------
 userProfileSchema.methods.isPasswordCorrect = async function (password) {
-  console.log(this.password)
   return await bcrypt.compare(password, this.password)
 }
 
