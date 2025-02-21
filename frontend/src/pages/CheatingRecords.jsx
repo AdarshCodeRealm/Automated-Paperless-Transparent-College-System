@@ -68,13 +68,10 @@ export default function AdminPage() {
     <div className="min-h-screen p-6 dark:bg-gray-950">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold">Cheating Record</h1>
           <p className="text-muted-foreground">Manage academic integrity violations</p>
         </div>
         <div className="flex gap-4">
-          <Link href="/">
-            <Button variant="outline">View Public Page</Button>
-          </Link>
           <Dialog>
             <DialogTrigger asChild>
               <Button>
