@@ -56,7 +56,7 @@ export default function AuthPage() {
       setOtpSent(false)
 
       console.log("User Register successfully:", response.data)
-      // Instead of immediate success, move to OTP verification
+      
     } catch (error) {
       console.error("Error signing up:", error.response?.data || error.message)
       // Handle signup error
