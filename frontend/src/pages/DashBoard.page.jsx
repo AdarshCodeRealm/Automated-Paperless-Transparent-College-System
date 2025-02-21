@@ -22,9 +22,9 @@ export default function Layout({ children }) {
   const navLinks = [
     { title: "Organization", icon: Home, path: "/" },
     { title: "Projects", icon: FileText, path: "/projects" },
-    { title: "Transactions", icon: CreditCard, path: "/transactions" },
-    { title: "Members", icon: Users, path: "/members" },
-    { title: "Complaints", icon: MessageSquare, path: "/complaints" },
+    { title: "Notify Parents", icon: CreditCard, path: "/healthAndLeaveNotify" },
+    { title: "Election", icon: Users, path: "/elections" },
+    { title: "Complaints", icon: MessageSquare, path: "/complaints" }, 
     { title: "Meetings", icon: Video, path: "/meetings" },
     { title: "Settings", icon: Settings, path: "/settings" },
     { title: "Help", icon: HelpCircle, path: "/help" },
