@@ -2,7 +2,8 @@
 
 import  { useState } from 'react'
 import { Bell, Moon, Menu, X, Home, Users, FileText, CreditCard, MessageSquare, Video, Settings, HelpCircle } from 'lucide-react'
-import AuthPage from './Authentication.page'
+import ComplaintList from './Complaint.page'
+
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -18,7 +19,7 @@ export default function Layout({ children }) {
   ]
 
   return (
-    <div className="min-h-screen bg-background bg-slate-900">
+    <div className="min-h-screen bg-background ">
       {/* Top Navbar */}
       <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur bg-black supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-14 items-center px-4">
@@ -69,7 +70,7 @@ export default function Layout({ children }) {
       <main className="min-h-[calc(100vh-3.5rem)] pt-14 md:ml-64">
         <div className="p-4">
           {/* {children} */}
-          <AuthPage/>
+          <ComplaintList/>
         </div>
       </main>
     </div>
