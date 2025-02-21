@@ -164,4 +164,89 @@ const sendResetPasswordMail = async (receiverEmail, OTP) => {
   return true
 }
 
-export { sendOtpVerificationMail, sendResetPasswordMail }
+const sendSickMail = async (receiverEmail,studentname,reportedBy,diagnosis) => {
+  const auth = nodemailer.createTransport({
+    service: "gmail",
+    secure: false,
+    port: 587,
+    auth: {
+      user: process.env.NODE_MAILER,
+      pass: process.env.NODE_MAILER_PASSWORD,
+    },
+    html: `   
+    <html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #f5f5f5;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        p {
+            color: #666;
+            line-height: 150%;
+        }
+        .button {
+            display: inline-block;
+            border-radius: 5px;
+            background: #3498db;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Regarding health issue</h1>
+        <p>he/she is sick</p>
+        
+      
+        <h2 style="color: #3498db; font-weight: bold;">${OTP}</h2>
+        
+        
+        
+        
+        <a href="" class="button">Click here to reset your password</a>
+    </div>
+</body>
+</html>
+`,
+
+// <a href="${resetLink}" class="button">Click here to reset your password</a>
+  })
+
+  const receiver = {
+    from: process.env.EMAIL,
+    to: receiverEmail,
+    subject: "Regarding Health issue",
+    Name:studentname,
+    reportedBy:reportedBy,
+    diagnosis:diagnosis,
+    html: auth.options.html,
+  }
+
+  auth.sendMail(receiver, (err, res) => {
+    if (err) throw err
+    // else console.log("done")
+  })
+  return true
+}
+
+export { sendOtpVerificationMail, sendResetPasswordMail, sendSickMail  }

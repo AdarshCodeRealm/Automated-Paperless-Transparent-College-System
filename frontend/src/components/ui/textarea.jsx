@@ -1,18 +1,38 @@
-import * as React from "react"
+    import * as React from "react";
+    import { Slot } from "@radix-ui/react-slot";
+    import { cva } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+    import { cn } from "@/lib/utils";
 
-const Textarea = React.forwardRef(({ className, ...props }, ref) => {
-  return (
-    (<textarea
-      className={cn(
-        "flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        className
-      )}
-      ref={ref}
-      {...props} />)
-  );
-})
-Textarea.displayName = "Textarea"
+    const textareaVariants = cva(
+    "resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+    {
+        variants: {
+        size: {
+            default: "h-9", // Adjust default height as needed
+            sm: "h-8",
+            lg: "h-12", // Or adjust as needed
+        },
+        },
+        defaultVariants: {
+        size: "default",
+        },
+    }
+    );
 
-export { Textarea }
+    const Textarea = React.forwardRef(
+    ({ className, size, asChild = false, ...props }, ref) => {
+        const Comp = asChild ? Slot : "textarea";
+        return (
+        <Comp
+            className={cn(textareaVariants({ size, className }))}
+            ref={ref}
+            {...props}
+        />
+        );
+    }
+    );
+
+    Textarea.displayName = "Textarea";
+
+    export { Textarea, textareaVariants };

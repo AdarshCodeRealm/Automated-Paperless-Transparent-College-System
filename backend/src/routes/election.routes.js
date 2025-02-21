@@ -28,7 +28,7 @@ router.post("/login", loginUser)
 router.get("/profile", authenticate, getProfile)
 
 // Register a Candidate
-router.post("/candidates", authenticate, registerCandidate)
+router.post("/registercandidate", authenticate, registerCandidate)
 
 // Get All Candidates
 router.get("/candidates", getAllCandidates)

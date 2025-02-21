@@ -3,7 +3,6 @@
     // ● If a student leaves campus, an automated email is sent to their parents for safety tracking.
 
     import {Student,HealthRecord,LeaveRecord,Notification} from '../models/healthandleave.models.js'
-
 //student createion
     const getStudents = async(req,res)=>{
         try {
@@ -53,7 +52,7 @@
     const gethealthrecordbystudentid = async(req,res) =>{
         try {
             const studentid = req.params.id;
-            const healthrecords = await HealthRecord.find({studentId:studentid}).populate('student');
+            const healthrecords = await HealthRecord.find({studentid:studentid}).populate('studentEmail');
             res.json(healthrecords);
         } catch (error) {
             console.log("Error creating health record",error);
@@ -75,7 +74,7 @@
     const getLeaverecordbystudentid = async(req,res) =>{
         try {
             const studentid = req.params.id;
-            const leaveRecords = await LeaveRecord.find({studentId:studentid}).populate('student');
+            const leaveRecords = await LeaveRecord.find({studentid:studentid}).populate('studentEmail');
             res.json(leaveRecords);
         } catch (error) {
             console.log("Error creating leave record",error);
@@ -93,25 +92,38 @@
         }
     };
 
-    const reportSickRoute = async (req, res) => { 
+    const reportSickRoute = async (req, res) => {
         try {
-            const { studentId, reportedBy, diagnosis } = req.body;
-            await reportSick(studentId, reportedBy, diagnosis); 
-            res.json({ message: "Sick report submitted" }); 
+            const { studentEmail, reportedBy, diagnosis } = req.body;
+    
+            const newHealthRecord = new HealthRecord({ studentEmail, reportedBy, diagnosis }); // Correct way to create a new document
+            const savedHealthRecord = await newHealthRecord.save(); // Save the document
+    
+            await Notification.create({ student: savedHealthRecord._id, type: "Sick", message: `${studentEmail} reported sick with ${diagnosis}.` })
+                .catch(notificationError => {
+                    console.error("Error creating notification:", notificationError);
+                });
+    
+            res.json({ message: "Sick report sent" ,savedHealthRecord});
         } catch (error) {
             console.error("Error in reportSickRoute:", error);
-            res.status(500).json({ message: "Server Error" });
+            res.status(500).json({ message: "Server Error", error: error.message }); // More informative error message (dev only)
         }
     };
     
     const studentLeavesCampusRoute = async (req, res) => {
         try {
-            const { studentId } = req.body;
-            await studentLeavesCampus(studentId);
-            res.json({ message: "Leave notification sent"});
+            const { studentEmail, reason } = req.body;
+    
+            const newLeaveRecord = new LeaveRecord({ studentEmail, reason }); // Use student's _id
+            const savedLeaveRecord = await newLeaveRecord.save();
+    
+            await Notification.create({ studentEmail: savedLeaveRecord._id, type: "Leave", message: `${studentEmail} has left campus due to ${reason}.` });
+    
+            res.json({ message: "Leave notification sent", savedLeaveRecord });
         } catch (error) {
-            console.error("Error in studentLeavesCampusRoute", error);
-            res.status(500).json({ message: "Server Error"});
+            console.error("Error in studentLeavesCampusRoute:", error);
+            res.status(500).json({ message: "Server Error" });
         }
     };
 

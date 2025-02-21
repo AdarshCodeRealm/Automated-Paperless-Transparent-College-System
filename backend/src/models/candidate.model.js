@@ -1,5 +1,4 @@
 import mongoose,{Schema} from "mongoose";
-import { userProfile,registerUser } from "../models/user.model.js";
 
 const candidateSchema = new Schema({
     name:{
