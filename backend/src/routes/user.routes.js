@@ -10,7 +10,7 @@ import {
 } from "../controllers/user.controller.js"
 import { VerifyOtp } from "../controllers/user.controller.js"
 const router = Router()
-
+import {verifyJWT} from "../middlewares/auth.middleware.js"
 router.post(
   "/register",
   upload.fields([{ name: "avatar", maxCount: 1 }]),
@@ -18,8 +18,8 @@ router.post(
 )
 
 router.post("/verifyOtp", VerifyOtp)
-router.get("/login", loginUser)
-router.get("/logout", logoutUser) 
+router.post("/login", loginUser)
+router.get("/logout",verifyJWT, logoutUser) 
 router.get("/getCurrentUser", getCurrentUser)
 router.get("/forgetPassword", forgetPassword)
 router.patch("/resetPassword", resetPassword)
