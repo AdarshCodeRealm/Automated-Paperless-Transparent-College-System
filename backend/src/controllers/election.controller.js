@@ -15,13 +15,13 @@ const userRegister = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        const existingUser = await userRegister.findOne({ email });
+        const existingUser = await registerUser.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'Email already exists' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword, role });
+        const newUser = new registerUser({ name, email, password: hashedPassword, role });
         await newUser.save();
 
         res.status(201).json({ message: 'User registered successfully' });
@@ -68,26 +68,20 @@ const getProfile = async (req, res) => {
 // Candidate Controllers
 const registerCandidate = async (req, res) => {
     try {
-        const {name,position,Email} = req.body;
-        console.log(req.body)
-        const newCandidate = new Candidate({
-            name:req.user._id,
-            position,
-            Email
-        });
-
+        const newCandidate = new Candidate(req.body);
         await newCandidate.save();
-        res.status(201).json({ message: 'Candidate registered successfully' });
+        console.log(newCandidate);
+        res.status(201).json({ message: 'Candidate registered successfully' ,newCandidate});
     } catch (error) {
         console.error("Candidate Registration Error:", error);
-        res.status(500).json({ message: 'Server error during candidate registration' });
+        res.status(500).json({ message: 'Server error during candidate registration' ,error});
     }
 };
 
 const getAllCandidates = async (req, res) => {
     try {
         const candidates = await Candidate.find();
-        res.json(candidates);
+        res.status(201).json(candidates);
     } catch (error) {
         console.error("Get Candidates Error:", error);
         res.status(500).json({ message: 'Server error getting candidates' });

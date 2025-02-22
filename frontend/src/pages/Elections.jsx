@@ -203,7 +203,12 @@ export default function ElectionDashboard() {
   
     console.log("Sending data:", candidateData);
     try {
-      const response = await axios.post('https://localhost:5000/election/registercandidate', candidateData);
+      const response = await axios.post('http://localhost:5000/election/candidateregister', 
+      candidateData,{
+        headers: {
+          'Content-Type': 'application/json',
+      }
+    })
       console.log("Candidate Registered Successfully:", response.data);
   } catch (error) {
       console.error("Error registering candidate:", error);

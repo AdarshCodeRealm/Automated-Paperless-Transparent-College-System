@@ -26,16 +26,16 @@ router.post("/register", userRegister)
 router.post("/login", loginUser)
 
 // Example of a protected route (requires authentication)
-router.get("/profile", authenticate, getProfile)
+router.get("/profile", verifyJWT, getProfile)
 
 // Register a Candidate
-router.post("/registercandidate",verifyJWT,registerCandidate) 
+router.post("/candidateregister",registerCandidate) //ye bhi
 
 // Get All Candidates
-router.get("/candidates", getAllCandidates)
+router.get("/candidates", getAllCandidates) //kam kara hai
 
 // Cast Vote (POST /election/vote) - Requires Authentication Middleware
-router.post("/vote", authenticate, castVote)
+router.post("/vote", verifyJWT, castVote)
 
 // Get Live Results
 router.get("/results", getLiveResults)

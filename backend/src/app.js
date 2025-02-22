@@ -12,7 +12,6 @@ import facilityBookingRouter from "./routes/facilityBooking.routes.js"
 import healthAndLeaveNotifyRouter from "./routes/healthAndLeaveNotify.routes.js"
 import integrityAndCheatingRecordRouter from "./routes/integrityAndCheatingRecord.routes.js"
 import testRouter from "./routes/test.route.js"
-import electionRoutes from './routes/election.routes.js'
 import userRouter from "./routes/user.routes.js"
 
 const app = express()

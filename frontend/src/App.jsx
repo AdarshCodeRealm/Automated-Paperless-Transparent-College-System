@@ -14,7 +14,6 @@ import RestrictedAccess from "./pages/RestrictedAccess.jsx"
 const router = createBrowserRouter([
   {
     path: "/dashboard",
-    path: "/dashBoard",
     element: <Dashboard />, // Use the Layout component here
     children: [
       // { index: true, element: <AuthPage /> }, // Index route for /
@@ -25,16 +24,11 @@ const router = createBrowserRouter([
       { path: "applicationApproval", element: <ApplicationApprovalSystem /> },
       { path: "cheatingRecords", element: <CheatingRecords /> },
       { path: "budgetSponsorshipTracking", element: <BudgetAndSponsorshipTracking /> },
-      { path: "/auth", element: <AuthPage />},
-      {path:"/restrict",element:<RestrictedAccess/>},
+      {path:"restrict",element:<RestrictedAccess/>},
     ],
   },
   {
     path: "/",
-    element: <AuthPage />,
-  },
-  {
-    path: "/", // If you still want a separate auth route
     element: <AuthPage />,
   },
 ])

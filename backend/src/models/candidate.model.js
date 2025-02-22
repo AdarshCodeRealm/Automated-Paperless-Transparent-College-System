@@ -2,8 +2,7 @@ import mongoose,{Schema} from "mongoose";
 
 const candidateSchema = new Schema({
     name:{
-        type:Schema.Types.ObjectId,
-        ref:"userProfile",
+        type:String,
         required:true
     },
     position:{type:String,required:true},
