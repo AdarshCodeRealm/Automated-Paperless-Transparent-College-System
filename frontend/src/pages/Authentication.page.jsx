@@ -84,7 +84,7 @@ export default function AuthPage() {
         console.log("Logged in successfully:", response.data)
       } catch (error) {
         console.error("Error logging in:", error.response?.data)
-        toast.error("Invalid Login credentials")
+        toast.error("Invalid Login credentials..", error.message)
       }
     } else {
       // Registration logic
