@@ -7,6 +7,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Dashboard from "./pages/DashBoard.page.jsx"
 import ComplaintList from "./pages/Complaint.page.jsx"
 import HealthAndLeaveNotify from "./pages/Health&Leave.page.jsx";
+import ApplicationApprovalSystem from "./pages/ApplicationApprovalSystem.jsx";
+import CheatingRecords from "./pages/CheatingRecords.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
         path: "/auth", // If you still want a separate auth route
         element: <AuthPage />,
       },
+      { path: "applicationApproval", element: <ApplicationApprovalSystem /> },
+      { path: "cheatingRecords", element: <CheatingRecords /> },
     ],
   },
   // {
