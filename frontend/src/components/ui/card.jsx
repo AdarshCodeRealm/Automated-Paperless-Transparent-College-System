@@ -42,4 +42,15 @@
     ));
     CardFooter.displayName = "CardFooter";
 
-    export { Card, CardHeader, CardTitle, CardContent, CardFooter };
+    const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
+    <div
+        ref={ref}
+        className={cn("text-sm text-muted-foreground", className)}
+        {...props}
+    />
+    ));
+    CardDescription.displayName = "CardDescription";
+
+    export { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription };
+
+
