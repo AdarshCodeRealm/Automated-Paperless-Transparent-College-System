@@ -211,7 +211,7 @@ const loginUser = async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: 'strict', // Recommended for security
     path: '/', // Adjust the path as needed
     maxAge: 3600000, // Cookie expiration (in milliseconds)

@@ -2,44 +2,51 @@
 // ● Students can submit anonymous complaints, which are visible to all.
 // ● Complaints undergo moderation; vulgar content is blocked (no inappropriate images/videos).
 // ● Identity of anonymous complainants is revealed only if a majority of board members approve.
-
+import mongoose from "mongoose"
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { Complaint, Comment } from "../models/complaint.model.js"
+import { userProfile } from "../models/user.model.js"
 const createComplaint = async (req, res) => {
-  const { title, description, category, status } = req.body
-  const { attachments } = req.files
-
-  const images = []
-  const videos = []
-
-  for (const attachment of attachments) {
-    if (attachment.mimetype.startsWith("image/")) {
-      images.push(attachment.path)
-    } else if (attachment.mimetype.startsWith("video/")) {
-      videos.push(attachment.path)
-    }
-  }
-  const cloudinaryImagesUrl = []
-  const cloudinaryVideosUrl = []
-  for (const image of images) {
-    const cloudinaryImage = await uploadOnCloudinary(image)
-    cloudinaryImagesUrl.push(cloudinaryImage?.url)
-  }
-  for (const video of videos) {
-    const cloudinaryVideo = await uploadOnCloudinary(video)
-    cloudinaryVideosUrl.push(cloudinaryVideo?.url)
+  const { title, description, category, status,id} = req.body
+  console.log(id)
+  // const { attachments } = req.files
+  const userData = await userProfile.findById(new mongoose.Types.ObjectId(id))
+  console.log(userData)
+  if (!userData) {
+    return res.status(404).json({ message: "User not found" })
   }
 
-  const cloudinaryAttachments = [...cloudinaryImagesUrl, ...cloudinaryVideosUrl]
+  // const images = []
+  // const videos = []
+
+  // for (const attachment of attachments) {
+  //   if (attachment.mimetype.startsWith("image/")) {
+  //     images.push(attachment.path)
+  //   } else if (attachment.mimetype.startsWith("video/")) { 
+  //     videos.push(attachment.path)
+  //   }
+  // }
+  // const cloudinaryImagesUrl = []
+  // const cloudinaryVideosUrl = []
+  // for (const image of images) {
+  //   const cloudinaryImage = await uploadOnCloudinary(image)
+  //   cloudinaryImagesUrl.push(cloudinaryImage?.url)
+  // }
+  // for (const video of videos) {
+  //   const cloudinaryVideo = await uploadOnCloudinary(video)
+  //   cloudinaryVideosUrl.push(cloudinaryVideo?.url)
+  // }
+
+  // const cloudinaryAttachments = [...cloudinaryImagesUrl, ...cloudinaryVideosUrl]
 
   const newComplaint = {
     title,
     description,
     category,
     status,
-    attachments: cloudinaryAttachments,
-    raisedBy: req.user._id,
+    // attachments: cloudinaryAttachments,
+    raisedBy:userData._id
   }
 
   const createdComplaint = await Complaint.create(newComplaint)
@@ -51,43 +58,43 @@ const createComplaint = async (req, res) => {
     complaint: createdComplaint,
   })
 }
-
 const toggleUpvote = async (req, res) => {
   try {
-    const { complaintId } = req.params
-    const userId = req.user._id // Assuming authentication middleware is used
+   
+    const { complaintId, userId } = req.params;
 
-    const complaint = await Complaint.findById(complaintId)
+    const complaint = await Complaint.findById(complaintId);
     if (!complaint) {
-      return res.status(404).json({ message: "Complaint not found" })
+      return res.status(404).json({ message: "Complaint not found" });
     }
 
-    const userIndex = complaint.upvote.indexOf(userId) // Check if userId exists
+    const userIndex = complaint.upvote.indexOf(userId); // Check if userId exists
 
     if (userIndex > -1) {
       // User ID is found, remove it (un-upvote)
-      complaint.upvote.splice(userIndex, 1)
-
-      await complaint.save()
-      res.json({ message: "undo Upvote  successfully", complaint })
+      complaint.upvote.splice(userIndex, 1);
+      complaint.voteCount = complaint.voteCount - 1; // Decrement voteCount
+      await complaint.save();
+      res.json({ message: "undo Upvote successfully", complaint });
     } else {
       // User ID is not found, add it (upvote)
-      complaint.upvote.push(userId)
+      complaint.upvote.push(userId);
+      complaint.voteCount = complaint.voteCount + 1; // Increment voteCount
 
       // Remove downvote if user has downvoted previously
-      const downvoteIndex = complaint.downvote.indexOf(userId)
+      const downvoteIndex = complaint.downvote.indexOf(userId);
       if (downvoteIndex > -1) {
-        complaint.downvote.splice(downvoteIndex, 1)
+        complaint.downvote.splice(downvoteIndex, 1);
       }
 
-      await complaint.save()
-      res.json({ message: "Upvote  successfully", complaint })
+      await complaint.save();
+      res.json({ message: "Upvote successfully", complaint });
     }
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: "Server error" })
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 const toggleDownvote = async (req, res) => {
   try {

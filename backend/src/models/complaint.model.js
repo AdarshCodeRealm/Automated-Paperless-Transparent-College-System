@@ -31,13 +31,16 @@ const complaintSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-  ],
+  ],voteCount: {
+    type: Number,
+    default: 0
+  },
   downvote: [
     {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-  ],
+  ], 
   comments: [
     {
       type: Schema.Types.ObjectId,

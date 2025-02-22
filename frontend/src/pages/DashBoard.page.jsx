@@ -16,6 +16,8 @@ import {
   HelpCircle,
 } from "lucide-react"
 import AuthPage from "./Authentication.page"
+import { toast } from "react-toastify"
+import { Avatar } from "@/components/ui/avatar"
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -49,11 +51,21 @@ export default function Layout({ children }) {
             <span className="font-semibold">Neo Fixers</span>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <button className="rounded-full p-2 hover:bg-accent">
+            <button className="rounded-full p-2 hover:bg-slate-700">
               <Bell className="h-5 w-5" />
             </button>
-            <button className="rounded-full p-2 hover:bg-accent">
-              <Moon className="h-5 w-5" />
+            <button className="rounded-full p-2 hover:bg-accent " onClick={() => {
+              localStorage.removeItem("accessToken")
+              localStorage.removeItem("refreshToken")
+              localStorage.removeItem("name")
+              localStorage.removeItem("email")
+              localStorage.removeItem("id")
+              toast.success("Logged out successfully")
+
+              window.location.href = "/"
+            }}>
+              <Avatar className="h-5 w-5 "  />
+              <span className="hidden md:block text-sm font-medium">{localStorage.getItem("name")}</span>
             </button>
           </div>
         </div>

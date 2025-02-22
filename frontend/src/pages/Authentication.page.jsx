@@ -52,6 +52,7 @@ export default function AuthPage() {
           otp,
         }
       )
+      console.log(response.data)
       toast.success("OTP verified successfully")
       setEmail("")
       setPassword("")
@@ -61,7 +62,7 @@ export default function AuthPage() {
       setOtpSent(false)
       setIsLogin(!isLogin)
 
-      console.log("User Register successfully:", response.data)
+      // console.log("User Register successfully:", response.data)
     } catch (error) {
       console.error("Error signing up:", error.response?.data || error.message)
       toast.error(error.response?.data.message)
@@ -86,8 +87,16 @@ export default function AuthPage() {
         setEmail("")
         setPassword("")
         toast.success(`Logged in successfully, Email: ${email}`)
-        
+        const accessToken = response.data.accessToken
+        const refreshToken = response.data.refreshToken
+
+        localStorage.setItem("accessToken", accessToken)
+        localStorage.setItem("refreshToken", refreshToken)
+        localStorage.setItem("email", email)
+        localStorage.setItem("name", response.data.user.name)
+        localStorage.setItem("id", response.data.user._id)
         navigate('/dashboard/home');
+        
         console.log("Logged in successfully:", response.data)
       } catch (error) {
         console.error("Error logging in:", error.response?.data)
@@ -219,7 +228,7 @@ export default function AuthPage() {
                     type="button"
                     className={`${glassyButtonClass} px-3 py-2`}
                   >
-                    <UserCircle className="w h-5" />
+                    <UserCircle className="w-5 h-5" />
                   </Button>
                 )}
               </div>

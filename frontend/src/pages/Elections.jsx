@@ -224,7 +224,7 @@ export default function ElectionDashboard() {
   }, [showYearSelect])
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
+    <div className="min-h-screen bg-gray-50 ">
       <div className="mx-auto max-w-7xl space-y-8">
         <Card className="bg-primary">
           <CardHeader className="space-y-1 text-white">

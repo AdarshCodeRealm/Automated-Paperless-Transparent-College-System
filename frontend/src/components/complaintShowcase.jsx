@@ -1,44 +1,92 @@
 // complaintShowcase.jsx
-import PropTypes from "prop-types"
-import { useState } from "react"
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import {
   ArrowBigUp,
   ArrowBigDown,
   MessageSquare,
   Send,
   Trash,
-} from "lucide-react"
+} from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function ComplaintShowcase({ complaint }) {
-  const [votes, setVotes] = useState(complaint?.votes ?? 0) // Safe initialization
-  const [isCommentOpen, setIsCommentOpen] = useState(false)
-  const [commentText, setCommentText] = useState("")
-  const [comments, setComments] = useState(complaint?.comments || []) // Safe initialization
+  const [votes, setVotes] = useState(0); // Initialize votes to 0
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
+useEffect(() => {
+  console.log(complaint?.voteCount);
+})
+ 
 
-  const handleDelete = () => {
-    // Implement delete logic here
-  }
+  function formatSocialMediaDate(dateString) {
+    const date = new Date(dateString);
 
-  const handleUpvote = () => {
-    setVotes((prev) => prev + 1)
-  }
+    if (isNaN(date)) {
+      return "Invalid Date";
+    }
 
-  const handleDownvote = () => {
-    setVotes((prev) => prev - 1)
-  }
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault()
-    if (commentText.trim()) {
-      setComments((prev) => [...prev, commentText])
-      setCommentText("")
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} seconds ago`;
+    } else if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} minutes ago`;
+    } else if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} hours ago`;
+    } else if (diffInSeconds < 604800) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} days ago`;
+    } else if (now.getFullYear() === date.getFullYear()) {
+      const options = { month: "short", day: "numeric" };
+      return date.toLocaleDateString(undefined, options);
+    } else {
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return date.toLocaleDateString(undefined, options);
     }
   }
 
+  const handleDelete = () => {
+    // Implement delete logic here
+  };
+
+  const handleUpvote = async () => {
+    try {
+      const id = localStorage.getItem("id");
+      console.log(id);
+      setVotes((prev) => prev + 1);
+      
+      const res =await axios.patch(
+        `http://localhost:5000/complaint/toggleUpvote/${complaint._id}/${id}`
+      );
+      console.log(res);
+      toast.success("Upvoted");
+    } catch (error) {
+      console.error("Error upvoting:", error);
+    }
+  };
+
+  const handleDownvote = () => {
+    setVotes((prev) => Math.max(0, prev - 1)); // Decrement votes, but not below 0
+  };
+
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    if (commentText.trim()) {
+      setComments((prev) => [...prev, commentText]);
+      setCommentText("");
+    }
+  };
+
   if (!complaint) {
-    // Very important: Handle the undefined complaint case!
-    return <div>Loading...</div> // Or return null, or a placeholder
+    return <div>Loading...</div>;
   }
+
   return (
     <div className="border-2 rounded-2xl m-2 flex items-center left-center p-4 px-24">
       <div className="max-w-2xl w-full">
@@ -46,21 +94,20 @@ function ComplaintShowcase({ complaint }) {
           <div className="flex items-center justify-between gap-2 mb-2">
             <div>
               <span className="text-sm font-medium text-blue-500">
-                u/{complaint.user}
+                anonymous/
               </span>
-              <span className="text-xs text-[#666668]">•</span>
+              <span className="text-xs text-[#666668]"></span>
               <span className="text-xs text-[#666668]">
-                Posted by {complaint.postedBy} / {complaint.timeAgo}
+                raised at {formatSocialMediaDate(complaint.createdAt)}
               </span>
             </div>
           </div>
 
           <div className="mb-3">
             <p className="text-slate-950 mb-2 font-bold">{complaint.title}</p>
-            <p className="text-slate-700 text-sm">{complaint.content}</p>
+            <p className="text-slate-700 text-sm">{complaint.description}</p>
           </div>
 
-          {/* ... (rest of your ComplaintShowcase JSX - buttons, comments, etc.) */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               <button
@@ -85,7 +132,7 @@ function ComplaintShowcase({ complaint }) {
               <span className="text-xs font-medium">Comment</span>
             </button>
             <button className="flex items-center text-[#666668] hover:bg-[#272729] px-2 py-1 rounded">
-              <Trash className="h-4 w-4 " /> {/* Trash icon with margin */}
+              <Trash className="h-4 w-4 " />
             </button>
           </div>
 
@@ -130,18 +177,20 @@ function ComplaintShowcase({ complaint }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
+
 ComplaintShowcase.propTypes = {
   complaint: PropTypes.shape({
-    // <-- Correct: Validate a single complaint object
+    _id: PropTypes.string.isRequired, // Added _id validation
     user: PropTypes.string.isRequired,
     postedBy: PropTypes.string.isRequired,
-    timeAgo: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired, // Added createdAt validation
     title: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    votes: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    upVote: PropTypes.arrayOf(PropTypes.string).isRequired, // Corrected prop type
     comments: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
-}
-export default ComplaintShowcase
+};
+
+export default ComplaintShowcase;
