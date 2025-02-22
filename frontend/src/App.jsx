@@ -9,6 +9,7 @@ import ComplaintList from "./pages/Complaint.page.jsx"
 import HealthAndLeaveNotify from "./pages/Health&Leave.page.jsx";
 import ApplicationApprovalSystem from "./pages/ApplicationApprovalSystem.jsx";
 import CheatingRecords from "./pages/CheatingRecords.jsx";
+import BudgetAndSponsorshipTracking from "./pages/BudgetSponsorshipTracking.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       },
       { path: "applicationApproval", element: <ApplicationApprovalSystem /> },
       { path: "cheatingRecords", element: <CheatingRecords /> },
+      { path: "budgetSponsorshipTracking", element: <BudgetAndSponsorshipTracking /> },
     ],
   },
   // {
