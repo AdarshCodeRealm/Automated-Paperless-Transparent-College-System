@@ -18,6 +18,8 @@ import {
   Shield,
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
+import { useNavigate } from 'react-router-dom';
+
 import axios from "axios"
 import { toast } from "react-toastify"
 export default function AuthPage() {
@@ -32,7 +34,7 @@ export default function AuthPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [otp, setOtp] = useState("") // State for OTP input
-
+  const navigate = useNavigate();
   const handleForgotPassword = (e) => {
     e.preventDefault()
     // Handle sending OTP
@@ -81,7 +83,11 @@ export default function AuthPage() {
             password,
           }
         )
+        setEmail("")
+        setPassword("")
         toast.success(`Logged in successfully, Email: ${email}`)
+        
+        navigate('/home');
         console.log("Logged in successfully:", response.data)
       } catch (error) {
         console.error("Error logging in:", error.response?.data)

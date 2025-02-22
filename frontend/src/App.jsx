@@ -9,7 +9,7 @@ import ComplaintList from "./pages/Complaint.page.jsx"
 import HealthAndLeaveNotify from "./pages/Health&Leave.page.jsx"
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashBoard",
     element: <Dashboard />, // Use the Layout component here
     children: [
       // { index: true, element: <AuthPage /> }, // Index route for /
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/auth",
+    path: "/",
     element: <AuthPage />,
   },
 ])
