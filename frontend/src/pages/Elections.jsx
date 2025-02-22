@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -28,7 +28,6 @@ import {
   ListFilter,
   Search,
   UserPlus,
-  Check,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -80,7 +79,23 @@ const upcomingElections = [
   },
 ]
 
-const candidates = [
+// Updated ongoingElections with endTime instead of endDate
+const ongoingElections = [
+  {
+    id: 1,
+    title: "STUDENT COUNCIL PRESIDENT ELECTION",
+    endTime: new Date(Date.now() + 172800000), // 48 hours from now
+    timeLeft: "48:00:00",
+  },
+  {
+    id: 2,
+    title: "CULTURAL SECRETARY ELECTION",
+    endTime: new Date(Date.now() + 259200000), // 72 hours from now
+    timeLeft: "72:00:00",
+  },
+]
+
+const candidateData = [
   {
     id: 1,
     name: "Sarah Johnson",
@@ -136,6 +151,7 @@ const candidates = [
   },
 ]
 
+// Updated voters with gender
 const voters = [
   {
     id: 1,
@@ -143,7 +159,8 @@ const voters = [
     regNumber: "BT21CS001",
     course: "B.Tech Computer Science",
     year: "2nd Year",
-    voted: true,
+    voted: [],
+    gender: "Female",
   },
   {
     id: 2,
@@ -151,7 +168,8 @@ const voters = [
     regNumber: "BT20EC015",
     course: "B.Tech Electronics",
     year: "3rd Year",
-    voted: false,
+    voted: [],
+    gender: "Male",
   },
   {
     id: 3,
@@ -159,7 +177,8 @@ const voters = [
     regNumber: "BT22ME030",
     course: "B.Tech Mechanical",
     year: "1st Year",
-    voted: true,
+    voted: [],
+    gender: "Male",
   },
   {
     id: 4,
@@ -167,7 +186,8 @@ const voters = [
     regNumber: "BT19CV022",
     course: "B.Tech Civil",
     year: "4th Year",
-    voted: true,
+    voted: [],
+    gender: "Female",
   },
   {
     id: 5,
@@ -175,7 +195,8 @@ const voters = [
     regNumber: "BT21EE011",
     course: "B.Tech Electrical",
     year: "2nd Year",
-    voted: false,
+    voted: [],
+    gender: "Male",
   },
 ]
 
@@ -187,6 +208,12 @@ export default function ElectionDashboard() {
   const [showYearSelect, setShowYearSelect] = useState(false)
   const [showPositionSelect, setShowPositionSelect] = useState(false)
   const selectRef = useRef(null)
+  const [category, setCategory] = useState("")
+
+  const [selectedElection, setSelectedElection] = useState(null)
+  const [ongoingElectionsState, setOngoingElectionsState] =
+    useState(ongoingElections)
+  const [votersState, setVotersState] = useState(voters)
 
   const handleSelectYearClick = () => {
     setShowYearSelect(!showYearSelect)
@@ -201,9 +228,58 @@ export default function ElectionDashboard() {
     console.log("Candidate Registered", { selectedYear, selectedPosition })
   }
 
-  const handleCastVote = () => {
-    console.log("Vote cast")
+  const handleCastVote = (electionId, voterId) => {
+    setVotersState((prevVoters) =>
+      prevVoters.map((voter) =>
+        voter.id === voterId
+          ? { ...voter, voted: [...voter.voted, electionId] }
+          : voter
+      )
+    )
   }
+
+  const handleElectionClick = (election) => {
+    setSelectedElection(election)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Registered Candidate Data:", candidateData);
+    alert("Candidate registered successfully!");
+  };
+
+  const handleChange = (e) => {
+    const { id, value, type, files } = e.target;
+    setCandidateData((prevData) => ({
+      ...prevData,
+      [id]: type === "file" ? files[0] : value,
+    }));
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setOngoingElectionsState((prevElections) =>
+        prevElections.map((election) => {
+          const now = new Date()
+          const timeLeft = election.endTime - now
+          if (timeLeft <= 0) {
+            return { ...election, timeLeft: "00:00:00" }
+          }
+          const hours = Math.floor(timeLeft / (1000 * 60 * 60))
+          const minutes = Math.floor(
+            (timeLeft % (1000 * 60 * 60)) / (1000 * 60)
+          )
+          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000)
+          return {
+            ...election,
+            timeLeft: `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
+          }
+        })
+      )
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -223,14 +299,35 @@ export default function ElectionDashboard() {
     }
   }, [showYearSelect])
 
+  const getVoterLists = () => {
+    const boysVoted = votersState.filter(
+      (voter) =>
+        voter.gender === "Male" && voter.voted.includes(selectedElection.id)
+    )
+    const girlsVoted = votersState.filter(
+      (voter) =>
+        voter.gender === "Female" && voter.voted.includes(selectedElection.id)
+    )
+    const boysNotVoted = votersState.filter(
+      (voter) =>
+        voter.gender === "Male" && !voter.voted.includes(selectedElection.id)
+    )
+    const girlsNotVoted = votersState.filter(
+      (voter) =>
+        voter.gender === "Female" && !voter.voted.includes(selectedElection.id)
+    )
+
+    return { boysVoted, girlsVoted, boysNotVoted, girlsNotVoted }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
       <header className="border-b">
-          <div className="container flex h-16 items-center px-4">
-            <h1 className="text-2xl font-semibold">Student Elections</h1>
-          </div>
-        </header>
-        <br />
+        <div className="container flex h-16 items-center px-4">
+          <h1 className="text-2xl font-semibold">Student Elections</h1>
+        </div>
+      </header>
+      <br />
       <div className="mx-auto max-w-7xl space-y-8">
         <Card className="bg-primary">
           <CardHeader className="space-y-1 text-white">
@@ -251,7 +348,7 @@ export default function ElectionDashboard() {
                 Register Candidate
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh] ">
+            <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Register Candidate</DialogTitle>
                 <DialogDescription>
@@ -259,86 +356,151 @@ export default function ElectionDashboard() {
                   done.
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleRegisterCandidate} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" required />
+                  <Input
+                    id="name"
+                    value={candidateData.name}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="photo">Photograph</Label>
-                  <Input id="photo" type="file" accept="image/*" required />
+                  <Input
+                    id="photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
+                    <Label htmlFor="course">Course</Label>
+                    <Input
+                      id="course"
+                      value={candidateData.course}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="year">Year</Label>
-                    <div ref={selectRef}>
-                      <Select onValueChange={(e) => setCategory(e)}>
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Select Year" />{" "}
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="1st Year">First Year</SelectItem>
-                            <SelectItem value="2nd year">Second Year</SelectItem>
-                            <SelectItem value="3rd year">Third Year</SelectItem>
-                            <SelectItem value="4th year">B.Tech</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <Select
+                      onValueChange={(value) =>
+                        setCandidateData({ ...candidateData, year: value })
+                      }
+                      required
+                    >
+                      <SelectTrigger id="year">
+                        <SelectValue placeholder="Select year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1st Year</SelectItem>
+                        <SelectItem value="2">2nd Year</SelectItem>
+                        <SelectItem value="3">3rd Year</SelectItem>
+                        <SelectItem value="4">4th Year</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="regNumber">Registration Number</Label>
-                  <Input id="regNumber" required />
+                  <Input
+                    id="regNumber"
+                    value={candidateData.regNumber}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={candidateData.email}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="position">Position Contesting For</Label>
-                  <div ref={selectRef}>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedPosition(value)
-                        setShowPositionSelect(false) // Dropdown close ho jayega
-                      }}
-                    >
-                      <SelectTrigger
-                        id="position"
-                        onClick={() =>
-                          setShowPositionSelect(!showPositionSelect)
-                        }
-                      >
-                        <SelectValue>
-                          {selectedPosition || "Select position"}
-                        </SelectValue>
-                      </SelectTrigger>
-                      {showPositionSelect && (
-                        <SelectContent>
-                          <SelectItem value="1">
-                            Girls Representative
-                          </SelectItem>
-                          <SelectItem value="2">Cultural Secretary</SelectItem>
-                          <SelectItem value="3">Technical Secretary</SelectItem>
-                          <SelectItem value="4">Sports Secretary</SelectItem>
-                          <SelectItem value="5">Boys Representative</SelectItem>
-                        </SelectContent>
-                      )}
-                    </Select>
-                  </div>
+                  <Select
+                    onValueChange={(value) =>
+                      setCandidateData({ ...candidateData, position: value })
+                    }
+                    required
+                  >
+                    <SelectTrigger id="position">
+                      <SelectValue placeholder="Select position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="president">President</SelectItem>
+                      <SelectItem value="vicePresident">
+                        Vice President
+                      </SelectItem>
+                      <SelectItem value="generalSecretary">
+                        General Secretary
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="motto">Campaign Motto</Label>
+                  <Input
+                    id="motto"
+                    value={candidateData.motto}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="manifesto">
+                    Proposed Plans / Agenda / Manifesto
+                  </Label>
+                  <Textarea
+                    id="manifesto"
+                    value={candidateData.manifesto}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="previousRoles">
+                    Previous Leadership Roles
+                  </Label>
+                  <Textarea
+                    id="previousRoles"
+                    value={candidateData.previousRoles}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="achievements">
+                    Academic & Extracurricular Achievements
+                  </Label>
+                  <Textarea
+                    id="achievements"
+                    value={candidateData.achievements}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="socialContributions">
+                    Social Contributions
+                  </Label>
+                  <Textarea
+                    id="socialContributions"
+                    value={candidateData.socialContributions}
+                    onChange={handleChange}
+                  />
                 </div>
                 <Button type="submit">Submit</Button>
               </form>
             </DialogContent>
           </Dialog>
-
-          <Button onClick={handleCastVote}>
-            <Check className="mr-2 h-4 w-4" />
-            Cast Vote
-          </Button>
         </div>
 
         {/* Stats Cards */}
@@ -351,23 +513,30 @@ export default function ElectionDashboard() {
               <Vote className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">10,234</div>
+              <div className="text-2xl font-bold">
+                {votersState.reduce(
+                  (acc, voter) => acc + voter.voted.length,
+                  0
+                )}
+              </div>
               <p className="text-xs text-muted-foreground">
-                collected last week
+                across all elections
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Ongoing Positions
+                Ongoing Elections
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">7</div>
+              <div className="text-2xl font-bold">
+                {ongoingElectionsState.length}
+              </div>
               <p className="text-xs text-muted-foreground">
-                positions being voted
+                elections in progress
               </p>
             </CardContent>
           </Card>
@@ -379,28 +548,64 @@ export default function ElectionDashboard() {
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">02:15:45</div>
-              <p className="text-xs text-muted-foreground">until polls close</p>
+              <div className="text-2xl font-bold">
+                {ongoingElectionsState.length > 0
+                  ? ongoingElectionsState[0].timeLeft
+                  : "00:00:00"}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                until next election ends
+              </p>
             </CardContent>
           </Card>
         </div>
 
+        {/* Ongoing Elections */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Ongoing Elections</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {ongoingElectionsState.map((election) => (
+                <div
+                  key={election.id}
+                  className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                  onClick={() => handleElectionClick(election)}
+                >
+                  <div>
+                    <h3 className="font-semibold">{election.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Ends: {election.endTime.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-mono text-sm">{election.timeLeft}</div>
+                    <p className="text-xs text-muted-foreground">Time Left</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Upcoming Elections */}
-        <Card>
+        <Card className="mb-8">
           <CardHeader>
             <CardTitle>Upcoming Elections</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingElections.map((election) => (
+              {ongoingElectionsState.map((election) => (
                 <div
                   key={election.id}
-                  className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
+                  className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                  onClick={() => handleElectionClick(election)}
                 >
                   <div>
                     <h3 className="font-semibold">{election.title}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Date: {election.date}
+                      Date: {election.endTime.toLocaleString()}
                     </p>
                   </div>
                   <div className="text-right">
@@ -416,259 +621,348 @@ export default function ElectionDashboard() {
         {/* Main Content */}
         <Card>
           <CardHeader>
-            <CardTitle>Election Results</CardTitle>
+            <CardTitle>
+              {selectedElection
+                ? `Election Results: ${selectedElection.title}`
+                : "Election Results"}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="candidates">Candidates</TabsTrigger>
-                <TabsTrigger value="voters">Voters List</TabsTrigger>
-              </TabsList>
+            {selectedElection ? (
+              <Tabs defaultValue="overview" className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="candidates">Candidates</TabsTrigger>
+                  <TabsTrigger value="voters">Voters List</TabsTrigger>
+                </TabsList>
 
-              {/* Overview Tab */}
-              <TabsContent value="overview" className="space-y-4">
-                <div className="flex justify-end space-x-2 mb-4">
-                  <Button
-                    variant={viewType === "table" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewType("table")}
-                  >
-                    <ListFilter className="h-4 w-4 mr-2" />
-                    Table
-                  </Button>
-                  <Button
-                    variant={viewType === "graph" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewType("graph")}
-                  >
-                    <BarChart2 className="h-4 w-4 mr-2" />
-                    Graph
-                  </Button>
-                </div>
-
-                {viewType === "table" ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Candidate</TableHead>
-                        <TableHead className="text-right">Votes</TableHead>
-                        <TableHead className="text-right">Percentage</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {mockData.map((candidate) => (
-                        <TableRow key={candidate.name}>
-                          <TableCell className="font-medium">
-                            {candidate.name}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {candidate.votes}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {candidate.percentage}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <div className="h-[400px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={mockData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="votes" fill="#3b82f6" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-              </TabsContent>
-
-              {/* Candidates Tab */}
-              <TabsContent value="candidates">
-                <div className="space-y-6">
-                  {candidates.map((candidate) => (
-                    <Card key={candidate.id}>
-                      <CardContent className="pt-6">
-                        <div className="grid gap-6 md:grid-cols-[200px_1fr]">
-                          <div className="space-y-4">
-                            <Avatar className="h-40 w-40">
-                              <AvatarImage
-                                src={candidate.photo}
-                                alt={candidate.name}
-                              />
-                              <AvatarFallback>
-                                {candidate.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <h3 className="font-semibold">
-                                {candidate.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {candidate.position}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="space-y-4">
-                            <Accordion type="single" collapsible>
-                              <AccordionItem value="details">
-                                <AccordionTrigger>
-                                  Personal Details
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                  <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                    <div>
-                                      <dt className="font-medium">
-                                        Course & Year
-                                      </dt>
-                                      <dd className="text-muted-foreground">
-                                        {candidate.course}, {candidate.year}
-                                      </dd>
-                                    </div>
-                                    <div>
-                                      <dt className="font-medium">
-                                        Registration Number
-                                      </dt>
-                                      <dd className="text-muted-foreground">
-                                        {candidate.regNumber}
-                                      </dd>
-                                    </div>
-                                    <div>
-                                      <dt className="font-medium">Email</dt>
-                                      <dd className="text-muted-foreground">
-                                        {candidate.email}
-                                      </dd>
-                                    </div>
-                                  </dl>
-                                </AccordionContent>
-                              </AccordionItem>
-                              <AccordionItem value="manifesto">
-                                <AccordionTrigger>
-                                  Campaign Motto & Manifesto
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                  <div className="space-y-4">
-                                    <div>
-                                      <h4 className="font-medium">Motto</h4>
-                                      <p className="text-muted-foreground">
-                                        {candidate.motto}
-                                      </p>
-                                    </div>
-                                    <div>
-                                      <h4 className="font-medium">
-                                        Proposed Plans
-                                      </h4>
-                                      <ul className="list-disc list-inside text-muted-foreground">
-                                        {candidate.manifesto.map((item, i) => (
-                                          <li key={i}>{item}</li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </AccordionContent>
-                              </AccordionItem>
-                              <AccordionItem value="experience">
-                                <AccordionTrigger>
-                                  Experience & Achievements
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                  <div className="space-y-4">
-                                    <div>
-                                      <h4 className="font-medium">
-                                        Previous Leadership Roles
-                                      </h4>
-                                      <ul className="list-disc list-inside text-muted-foreground">
-                                        {candidate.previousRoles.map(
-                                          (role, i) => (
-                                            <li key={i}>{role}</li>
-                                          )
-                                        )}
-                                      </ul>
-                                    </div>
-                                    <div>
-                                      <h4 className="font-medium">
-                                        Achievements
-                                      </h4>
-                                      <ul className="list-disc list-inside text-muted-foreground">
-                                        {candidate.achievements.map(
-                                          (achievement, i) => (
-                                            <li key={i}>{achievement}</li>
-                                          )
-                                        )}
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </AccordionContent>
-                              </AccordionItem>
-                              <AccordionItem value="contributions">
-                                <AccordionTrigger>
-                                  Social Contributions
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                  <ul className="list-disc list-inside text-muted-foreground">
-                                    {candidate.socialContributions.map(
-                                      (contribution, i) => (
-                                        <li key={i}>{contribution}</li>
-                                      )
-                                    )}
-                                  </ul>
-                                </AccordionContent>
-                              </AccordionItem>
-                            </Accordion>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-
-              {/* Voters List Tab */}
-              <TabsContent value="voters">
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Input placeholder="Search voters..." />
-                    <Button size="icon">
-                      <Search className="h-4 w-4" />
+                {/* Overview Tab */}
+                <TabsContent value="overview" className="space-y-4">
+                  <div className="flex justify-end space-x-2 mb-4">
+                    <Button
+                      variant={viewType === "table" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setViewType("table")}
+                    >
+                      <ListFilter className="h-4 w-4 mr-2" />
+                      Table
+                    </Button>
+                    <Button
+                      variant={viewType === "graph" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setViewType("graph")}
+                    >
+                      <BarChart2 className="h-4 w-4 mr-2" />
+                      Graph
                     </Button>
                   </div>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Registration Number</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Year</TableHead>
-                        <TableHead>Voted</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {voters.map((voter) => (
-                        <TableRow key={voter.id}>
-                          <TableCell className="font-medium">
-                            {voter.name}
-                          </TableCell>
-                          <TableCell>{voter.regNumber}</TableCell>
-                          <TableCell>{voter.course}</TableCell>
-                          <TableCell>{voter.year}</TableCell>
-                          <TableCell>{voter.voted ? "Yes" : "No"}</TableCell>
+
+                  {viewType === "table" ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Candidate</TableHead>
+                          <TableHead className="text-right">Votes</TableHead>
+                          <TableHead className="text-right">
+                            Percentage
+                          </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </TabsContent>
-            </Tabs>
+                      </TableHeader>
+                      <TableBody>
+                        {mockData.map((candidate) => (
+                          <TableRow key={candidate.name}>
+                            <TableCell className="font-medium">
+                              {candidate.name}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {candidate.votes}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {candidate.percentage}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div className="h-[400px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={mockData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Bar dataKey="votes" fill="#3b82f6" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Candidates Tab */}
+                <TabsContent value="candidates">
+                  <div className="space-y-6">
+                    {candidates.map((candidate) => (
+                      <Card key={candidate.id}>
+                        <CardContent className="pt-6">
+                          <div className="grid gap-6 md:grid-cols-[200px_1fr]">
+                            <div className="space-y-4">
+                              <Avatar className="h-40 w-40">
+                                <AvatarImage
+                                  src={candidate.photo}
+                                  alt={candidate.name}
+                                />
+                                <AvatarFallback>
+                                  {candidate.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <h3 className="font-semibold">
+                                  {candidate.name}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {candidate.position}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="space-y-4">
+                              <Accordion type="single" collapsible>
+                                <AccordionItem value="details">
+                                  <AccordionTrigger>
+                                    Personal Details
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                      <div>
+                                        <dt className="font-medium">
+                                          Course & Year
+                                        </dt>
+                                        <dd className="text-muted-foreground">
+                                          {candidate.course}, {candidate.year}
+                                        </dd>
+                                      </div>
+                                      <div>
+                                        <dt className="font-medium">
+                                          Registration Number
+                                        </dt>
+                                        <dd className="text-muted-foreground">
+                                          {candidate.regNumber}
+                                        </dd>
+                                      </div>
+                                      <div>
+                                        <dt className="font-medium">Email</dt>
+                                        <dd className="text-muted-foreground">
+                                          {candidate.email}
+                                        </dd>
+                                      </div>
+                                    </dl>
+                                  </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="manifesto">
+                                  <AccordionTrigger>
+                                    Campaign Motto & Manifesto
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <div className="space-y-4">
+                                      <div>
+                                        <h4 className="font-medium">Motto</h4>
+                                        <p className="text-muted-foreground">
+                                          {candidate.motto}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <h4 className="font-medium">
+                                          Proposed Plans
+                                        </h4>
+                                        <ul className="list-disc list-inside text-muted-foreground">
+                                          {candidate.manifesto.map(
+                                            (item, i) => (
+                                              <li key={i}>{item}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="experience">
+                                  <AccordionTrigger>
+                                    Experience & Achievements
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <div className="space-y-4">
+                                      <div>
+                                        <h4 className="font-medium">
+                                          Previous Leadership Roles
+                                        </h4>
+                                        <ul className="list-disc list-inside text-muted-foreground">
+                                          {candidate.previousRoles.map(
+                                            (role, i) => (
+                                              <li key={i}>{role}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      </div>
+                                      <div>
+                                        <h4 className="font-medium">
+                                          Achievements
+                                        </h4>
+                                        <ul className="list-disc list-inside text-muted-foreground">
+                                          {candidate.achievements.map(
+                                            (achievement, i) => (
+                                              <li key={i}>{achievement}</li>
+                                            )
+                                          )}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="contributions">
+                                  <AccordionTrigger>
+                                    Social Contributions
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <ul className="list-disc list-inside text-muted-foreground">
+                                      {candidate.socialContributions.map(
+                                        (contribution, i) => (
+                                          <li key={i}>{contribution}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                {/* Voters List Tab */}
+                <TabsContent value="voters">
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Input placeholder="Search voters..." />
+                      <Button size="icon">
+                        <Search className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Tabs>
+                      <TabsList>
+                        <TabsTrigger value="all">All Voters</TabsTrigger>
+                        <TabsTrigger value="voted">Voted</TabsTrigger>
+                        <TabsTrigger value="not-voted">Not Voted</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="all">
+                        <VoterTable
+                          voters={votersState}
+                          electionId={selectedElection.id}
+                          handleCastVote={handleCastVote}
+                        />
+                      </TabsContent>
+                      <TabsContent value="voted">
+                        <Tabs>
+                          <TabsList>
+                            <TabsTrigger value="boys-voted">Boys</TabsTrigger>
+                            <TabsTrigger value="girls-voted">Girls</TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="boys-voted">
+                            <VoterTable
+                              voters={getVoterLists().boysVoted}
+                              electionId={selectedElection.id}
+                              handleCastVote={handleCastVote}
+                            />
+                          </TabsContent>
+                          <TabsContent value="girls-voted">
+                            <VoterTable
+                              voters={getVoterLists().girlsVoted}
+                              electionId={selectedElection.id}
+                              handleCastVote={handleCastVote}
+                            />
+                          </TabsContent>
+                        </Tabs>
+                      </TabsContent>
+                      <TabsContent value="not-voted">
+                        <Tabs>
+                          <TabsList>
+                            <TabsTrigger value="boys-not-voted">
+                              Boys
+                            </TabsTrigger>
+                            <TabsTrigger value="girls-not-voted">
+                              Girls
+                            </TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="boys-not-voted">
+                            <VoterTable
+                              voters={getVoterLists().boysNotVoted}
+                              electionId={selectedElection.id}
+                              handleCastVote={handleCastVote}
+                            />
+                          </TabsContent>
+                          <TabsContent value="girls-not-voted">
+                            <VoterTable
+                              voters={getVoterLists().girlsNotVoted}
+                              electionId={selectedElection.id}
+                              handleCastVote={handleCastVote}
+                            />
+                          </TabsContent>
+                        </Tabs>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <p>Select an ongoing election to view results.</p>
+            )}
           </CardContent>
         </Card>
       </div>
     </div>
+  )
+}
+
+function VoterTable({ voters, electionId, handleCastVote }) {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Registration Number</TableHead>
+          <TableHead>Course</TableHead>
+          <TableHead>Year</TableHead>
+          <TableHead>Gender</TableHead>
+          <TableHead>Voted</TableHead>
+          <TableHead>Action</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {voters.map((voter) => (
+          <TableRow key={voter.id}>
+            <TableCell className="font-medium">{voter.name}</TableCell>
+            <TableCell>{voter.regNumber}</TableCell>
+            <TableCell>{voter.course}</TableCell>
+            <TableCell>{voter.year}</TableCell>
+            <TableCell>{voter.gender}</TableCell>
+            <TableCell>
+              {voter.voted.includes(electionId) ? "Yes" : "No"}
+            </TableCell>
+            <TableCell>
+              {!voter.voted.includes(electionId) && (
+                <Button onClick={() => handleCastVote(electionId, voter.id)}>
+                  Cast Vote
+                </Button>
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
