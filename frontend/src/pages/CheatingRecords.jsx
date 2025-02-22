@@ -54,7 +54,7 @@ export default function AdminPage() {
         formData.append(key, newViolation[key])
       }
       await axios.post(
-        "http://localhost:5000/integrityAndCheatingRecord",
+        "https://hackfusion-2025.onrender.com/integrityAndCheatingRecord",
         formData,
         {
           headers: {
@@ -97,7 +97,7 @@ export default function AdminPage() {
     ) {
       try {
         await axios.delete(
-          `http://localhost:5000/integrityAndCheatingRecord/${id}`
+          `https://hackfusion-2025.onrender.com/integrityAndCheatingRecord/${id}`
         ) // Adjust the API endpoint as needed
         toast.success("Record deleted successfully!")
         fetchViolations()
@@ -110,7 +110,7 @@ export default function AdminPage() {
   const fetchViolations = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/integrityAndCheatingRecord"
+        "https://hackfusion-2025.onrender.com/integrityAndCheatingRecord"
       ) // Adjust the API endpoint as needed
       if (response.status === 200) {
         console.log(response.data)
