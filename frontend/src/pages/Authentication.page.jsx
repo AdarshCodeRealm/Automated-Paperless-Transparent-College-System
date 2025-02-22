@@ -87,7 +87,7 @@ export default function AuthPage() {
         setPassword("")
         toast.success(`Logged in successfully, Email: ${email}`)
         
-        navigate('/home');
+        navigate('/dashboard/home');
         console.log("Logged in successfully:", response.data)
       } catch (error) {
         console.error("Error logging in:", error.response?.data)
