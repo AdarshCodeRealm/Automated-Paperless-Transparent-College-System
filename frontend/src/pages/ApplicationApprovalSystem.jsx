@@ -400,14 +400,15 @@ export default function ApplicationPortal() {
   const [filterStatus, setFilterStatus] = useState("all")
 
   const filteredApplications = useMemo(() => {
-    return sampleApplications
+    const sortedApps = sampleApplications
       .filter((app) => filterType === "all" || app.type === filterType)
       .filter((app) => filterStatus === "all" || app.status === filterStatus)
       .sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt))
-      .map((app, index) => ({
-        ...app,
-        priority: index === 0 ? "high" : app.priority,
-      }))
+
+    return sortedApps.map((app, index) => ({
+      ...app,
+      priority: index === 0 ? "high" : index === sortedApps.length - 1 ? "low" : "medium",
+    }))
   }, [filterType, filterStatus])
 
   return (
