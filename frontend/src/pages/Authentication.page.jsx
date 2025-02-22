@@ -72,8 +72,9 @@ export default function AuthPage() {
     if (isLogin) {
       console.log("Login logic")
       console.log(email, password)
+
       try {
-        const response = await axios.get(
+        const response = await axios.post(
           "https://hackfusion-2025.onrender.com/user/login",
           {
             email,
