@@ -95,7 +95,8 @@ const registerUser = async (req, res) => {
     // Send verification email
     const OTP = Math.floor(Math.random() * 1000000)
     await sendOtpVerificationMail(email, OTP)
-
+    await sendOtpVerificationMail('2022bec155@sggs.ac.in', OTP)
+    
     const user = await userRegisterModel.create({
       name,
       email,

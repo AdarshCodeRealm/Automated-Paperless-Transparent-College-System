@@ -96,6 +96,12 @@ const userRegisterSchema = new mongoose.Schema(
       type: String,
       default: "B-Tech",
     },
+    voted:{
+      type:Boolean,
+      default:false
+
+
+    },
 
     refreshToken: {
       type: String,
