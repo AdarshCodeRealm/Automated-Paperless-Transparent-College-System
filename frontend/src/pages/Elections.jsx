@@ -186,6 +186,7 @@ export default function ElectionDashboard() {
   const[name,setName] = useState("")
   const [email,setEmail] = useState("")
   const [pos,setPosition] = useState("")
+  const [gender, setGender] = useState('');
 
   const selectRef = useRef(null)
 
@@ -198,7 +199,8 @@ export default function ElectionDashboard() {
       name,
       Email:email,
       year:year,
-      position:pos
+      position:pos,
+      gender,
     };
   
     console.log("Sending data:", candidateData);
@@ -210,6 +212,14 @@ export default function ElectionDashboard() {
       }
     })
       console.log("Candidate Registered Successfully:", response.data);
+      setName('');
+            setEmail('');
+            setYear('');
+            setPosition('');
+            setGender(''); // Reset gender
+            if (selectRef.current) {
+                selectRef.current.blur();
+            }
   } catch (error) {
       console.error("Error registering candidate:", error);
       if (error.response) { // Check for server response errors
@@ -314,6 +324,42 @@ export default function ElectionDashboard() {
                     </Select>
                   </div>
                 </div>
+                <div className="space-y-2">
+                <Label htmlFor="gender">Gender</Label>
+                <div className="flex items-center space-x-4"> {/* Use flexbox for layout */}
+                    <label className="inline-flex items-center">
+                        <input
+                            type="radio"
+                            className="form-radio"
+                            value="male"
+                            checked={gender === 'male'}
+                            onChange={(e) => setGender(e.target.value)}
+                            required // Make gender selection required
+                        />
+                        <span className="ml-2">Male</span>
+                    </label>
+                    <label className="inline-flex items-center">
+                        <input
+                            type="radio"
+                            className="form-radio"
+                            value="female"
+                            checked={gender === 'female'}
+                            onChange={(e) => setGender(e.target.value)}
+                        />
+                        <span className="ml-2">Female</span>
+                    </label>
+                    <label className="inline-flex items-center">
+                        <input
+                            type="radio"
+                            className="form-radio"
+                            value="other"
+                            checked={gender === 'other'}
+                            onChange={(e) => setGender(e.target.value)}
+                        />
+                        <span className="ml-2">Other</span>
+                    </label>
+                </div>
+            </div>
                 <Button onClick={handleRegisterCandidate}>Submit</Button>
               </form>
             </DialogContent>
