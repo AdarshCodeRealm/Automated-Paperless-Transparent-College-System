@@ -224,12 +224,18 @@ export default function ElectionDashboard() {
   }, [showYearSelect])
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
+      <header className="border-b">
+          <div className="container flex h-16 items-center px-4">
+            <h1 className="text-2xl font-semibold">Student Elections</h1>
+          </div>
+        </header>
+        <br />
       <div className="mx-auto max-w-7xl space-y-8">
         <Card className="bg-primary">
           <CardHeader className="space-y-1 text-white">
             <CardTitle className="text-2xl font-bold">
-              SRC/NUGS 2024 ELECTIONS
+              SGGS 2025 ELECTIONS
             </CardTitle>
             <p className="text-primary-foreground/80">
               17,000 registered voters

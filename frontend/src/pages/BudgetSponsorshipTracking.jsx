@@ -120,17 +120,10 @@ export default function BudgetTracking() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
       {/*<h1 className="text-3xl font-bold text-center mb-8">
         Transparent College Budget & Sponsorship Tracking
       </h1>*/}
-      {/*<Card className="bg-primary">
-        <CardHeader className="space-y-1 text-white">
-          <CardTitle className="text-2xl font-bold">
-            SRC/NUGS 2024 ELECTIONS
-          </CardTitle>
-        </CardHeader>
-      </Card> */}
       <header className="border-b">
         <div className="container flex h-16 items-center px-4">
           <h1 className="text-2xl font-semibold">Budget & Sponsorship Tracker</h1>
@@ -390,22 +383,6 @@ export default function BudgetTracking() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Upload Expense Proof</CardTitle>
-          <CardDescription>Upload bills, receipts, or images for expense verification</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-4">
-            <Input id="picture" type="file" onChange={handleFileChange} />
-            <Button onClick={handleUpload} disabled={!selectedFile}>
-              <FileUp className="mr-2 h-4 w-4" /> Upload
-            </Button>
-          </div>
-          {selectedFile && <p className="mt-2 text-sm text-muted-foreground">Selected file: {selectedFile.name}</p>}
-        </CardContent>
-      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>

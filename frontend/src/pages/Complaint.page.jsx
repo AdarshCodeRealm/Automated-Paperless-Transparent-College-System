@@ -129,7 +129,13 @@ function ComplaintList() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
+      <header className="border-b">
+        <div className="container flex h-16 items-center px-4">
+          <h1 className="text-2xl font-semibold">Complaint Desk</h1>
+        </div>
+      </header>
+      <br />
       {data.map((complaint) => (
         <ComplaintShowcase key={complaint.title} complaint={complaint} />
       ))}

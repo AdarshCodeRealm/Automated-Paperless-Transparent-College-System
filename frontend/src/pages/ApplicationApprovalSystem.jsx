@@ -412,16 +412,11 @@ export default function ApplicationPortal() {
   }, [filterType, filterStatus])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
       <div className="flex flex-col">
         <header className="border-b">
           <div className="container flex h-16 items-center px-4">
-            <h1 className="text-2xl font-semibold">Application Portal</h1>
-            <div className="ml-auto flex items-center space-x-4">
-              <Button variant="outline" size="icon">
-                <Bell className="h-4 w-4" />
-              </Button>
-            </div>
+            <h1 className="text-2xl font-semibold">Applications Portal</h1>
           </div>
         </header>
         <main className="flex-1">

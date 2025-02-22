@@ -65,85 +65,88 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 dark:bg-gray-950">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Cheating Record</h1>
-          <p className="text-muted-foreground">Manage academic integrity violations</p>
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
+      {/* Header */}
+      <header className="border-b">
+        <div className="container flex h-16 items-center px-4">
+          <h1 className="text-2xl font-semibold">Academic Integrity & Cheating Records</h1>
         </div>
-        <div className="flex gap-4">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add New Record
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Add New Violation Record</DialogTitle>
-                <DialogDescription>Enter the details of the academic integrity violation.</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="regNo">Registration Number</Label>
-                    <Input id="regNo" placeholder="Enter registration number" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Enter student name" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="year">Year</Label>
-                    <Input id="year" placeholder="Enter year" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="branch">Branch</Label>
-                    <Input id="branch" placeholder="Enter branch" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Enter email" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="subjectCode">Subject Code</Label>
-                    <Input id="subjectCode" placeholder="Enter subject code" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="subjectName">Subject Name</Label>
-                    <Input id="subjectName" placeholder="Enter subject name" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="invigilator">Invigilator Name</Label>
-                    <Input id="invigilator" placeholder="Enter invigilator name" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="invigilatorId">Invigilator ID</Label>
-                    <Input id="invigilatorId" placeholder="Enter invigilator ID" />
-                  </div>
+      </header>
+      <br />
+      {/* Add New Record Button */}
+      <div className="mb-4 flex justify-end">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add New Record
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add New Violation Record</DialogTitle>
+              <DialogDescription>Enter the details of the academic integrity violation.</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="regNo">Registration Number</Label>
+                  <Input id="regNo" placeholder="Enter registration number" />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="reason">Reason</Label>
-                  <Textarea id="reason" placeholder="Describe the violation" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="proof">Evidence/Proof</Label>
-                  <Input id="proof" type="file" />
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input id="name" placeholder="Enter student name" />
                 </div>
               </div>
-              <Button>Submit Record</Button>
-            </DialogContent>
-          </Dialog>
-        </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="year">Year</Label>
+                  <Input id="year" placeholder="Enter year" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="branch">Branch</Label>
+                  <Input id="branch" placeholder="Enter branch" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="Enter email" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="subjectCode">Subject Code</Label>
+                  <Input id="subjectCode" placeholder="Enter subject code" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="subjectName">Subject Name</Label>
+                  <Input id="subjectName" placeholder="Enter subject name" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="invigilator">Invigilator Name</Label>
+                  <Input id="invigilator" placeholder="Enter invigilator name" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="invigilatorId">Invigilator ID</Label>
+                  <Input id="invigilatorId" placeholder="Enter invigilator ID" />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="reason">Reason</Label>
+                <Textarea id="reason" placeholder="Describe the violation" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="proof">Evidence/Proof</Label>
+                <Input id="proof" type="file" />
+              </div>
+            </div>
+            <Button>Submit Record</Button>
+          </DialogContent>
+        </Dialog>
       </div>
 
+      {/* Table */}
       <div className="rounded-lg border bg-background">
         <Table>
           <TableHeader>

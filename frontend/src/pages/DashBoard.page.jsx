@@ -26,7 +26,7 @@ export default function Layout({ children }) {
   const navLinks = [
     { title: "Book Facilities", icon: NotepadText, path: "/dashboard" },
     { title: "Notify Parents", icon: CreditCard, path: "/dashboard/healthAndLeaveNotify" },
-    { title: "Election", icon:Users , path: "/dashboard/elections" },
+    { title: "Elections", icon:Users , path: "/dashboard/elections" },
     { title: "Academic Integrity", icon:SquareLibrary , path: "/dashboard/CheatingRecords" },
     { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
     { title: "Applications & Approvals", icon: AppWindow, path: "/dashboard/applicationapproval" },
