@@ -17,19 +17,58 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { FileUp, DollarSign, PieChart, Calendar, Utensils } from "lucide-react"
+import { FileUp, DollarSign, PieChart, Calendar, Utensils, Eye } from "lucide-react"
 
 // Mock data for demonstration
 const sponsorships = [
-  { id: 1, sponsor: "Tech Corp", amount: 50000, purpose: "Annual Tech Fest" },
-  { id: 2, sponsor: "Local Bank", amount: 25000, purpose: "Scholarship Fund" },
-  { id: 3, sponsor: "Sports Brand", amount: 30000, purpose: "Athletics Equipment" },
+  {
+    id: 1,
+    sponsor: "Tech Corp",
+    amount: 50000,
+    purpose: "Annual Tech Fest",
+    proofOfPayment: "techcorp_payment_proof.pdf",
+    expenseProofs: ["techfest_expense_1.pdf", "techfest_expense_2.pdf"],
+  },
+  {
+    id: 2,
+    sponsor: "Local Bank",
+    amount: 25000,
+    purpose: "Scholarship Fund",
+    proofOfPayment: "localbank_payment_proof.pdf",
+    expenseProofs: ["scholarship_expense_1.pdf", "scholarship_expense_2.pdf"],
+  },
+  {
+    id: 3,
+    sponsor: "Sports Brand",
+    amount: 30000,
+    purpose: "Athletics Equipment",
+    proofOfPayment: "sportsbrand_payment_proof.pdf",
+    expenseProofs: ["athletics_expense_1.pdf", "athletics_expense_2.pdf"],
+  },
 ]
 
 const departmentBudgets = [
-  { id: 1, department: "Computer Science", budget: 100000, spent: 75000 },
-  { id: 2, department: "Mechanical Engineering", budget: 120000, spent: 90000 },
-  { id: 3, department: "Electrical Engineering", budget: 110000, spent: 85000 },
+  {
+    id: 1,
+    department: "Computer Science",
+    budget: 100000,
+    spent: 75000,
+    expenseProofs: ["cs_expense_1.pdf", "cs_expense_2.pdf"],
+  },
+  {
+    id: 2,
+    department: "Mechanical Engineering",
+    budget: 120000,
+    spent: 90000,
+    expenseProofs: ["me_expense_1.pdf", "me_expense_2.pdf"],
+  },
+  {
+    id: 3,
+    department: "Electrical Engineering",
+    budget: 110000,
+    spent: 85000,
+    expenseProofs: ["ee_expense_1.pdf", "ee_expense_2.pdf"],
+  },
 ]
 
 const eventFunds = [
@@ -39,9 +78,27 @@ const eventFunds = [
 ]
 
 const messBudgets = [
-  { id: 1, month: "January", budget: 200000, spent: 195000 },
-  { id: 2, month: "February", budget: 200000, spent: 198000 },
-  { id: 3, month: "March", budget: 200000, spent: 190000 },
+  {
+    id: 1,
+    month: "January",
+    budget: 200000,
+    spent: 195000,
+    expenseProofs: ["january_receipt_1.pdf", "january_receipt_2.pdf"],
+  },
+  {
+    id: 2,
+    month: "February",
+    budget: 200000,
+    spent: 198000,
+    expenseProofs: ["february_receipt_1.pdf", "february_receipt_2.pdf"],
+  },
+  {
+    id: 3,
+    month: "March",
+    budget: 200000,
+    spent: 190000,
+    expenseProofs: ["march_receipt_1.pdf", "march_receipt_2.pdf"],
+  },
 ]
 
 export default function BudgetTracking() {
@@ -87,6 +144,7 @@ export default function BudgetTracking() {
                     <TableHead>Sponsor</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Purpose</TableHead>
+                    <TableHead>Details</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -95,6 +153,41 @@ export default function BudgetTracking() {
                       <TableCell>{sponsorship.sponsor}</TableCell>
                       <TableCell>${sponsorship.amount.toLocaleString()}</TableCell>
                       <TableCell>{sponsorship.purpose}</TableCell>
+                      <TableCell>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>{sponsorship.sponsor} Sponsorship Details</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                              <p>
+                                <strong>Amount:</strong> ${sponsorship.amount.toLocaleString()}
+                              </p>
+                              <p>
+                                <strong>Purpose:</strong> {sponsorship.purpose}
+                              </p>
+                              <div>
+                                <h4 className="mb-2 font-semibold">Proof of Payment:</h4>
+                                <p>{sponsorship.proofOfPayment}</p>
+                              </div>
+                              <div>
+                                <h4 className="mb-2 font-semibold">Expense Proofs:</h4>
+                                <ul className="list-disc pl-5">
+                                  {sponsorship.expenseProofs.map((proof, index) => (
+                                    <li key={index}>{proof}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -129,6 +222,7 @@ export default function BudgetTracking() {
                     <TableHead>Budget</TableHead>
                     <TableHead>Spent</TableHead>
                     <TableHead>Remaining</TableHead>
+                    <TableHead>Details</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -138,6 +232,40 @@ export default function BudgetTracking() {
                       <TableCell>${dept.budget.toLocaleString()}</TableCell>
                       <TableCell>${dept.spent.toLocaleString()}</TableCell>
                       <TableCell>${(dept.budget - dept.spent).toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>{dept.department} Budget Details</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                              <p>
+                                <strong>Budget:</strong> ${dept.budget.toLocaleString()}
+                              </p>
+                              <p>
+                                <strong>Spent:</strong> ${dept.spent.toLocaleString()}
+                              </p>
+                              <p>
+                                <strong>Remaining:</strong> ${(dept.budget - dept.spent).toLocaleString()}
+                              </p>
+                              <div>
+                                <h4 className="mb-2 font-semibold">Expense Proofs:</h4>
+                                <ul className="list-disc pl-5">
+                                  {dept.expenseProofs.map((proof, index) => (
+                                    <li key={index}>{proof}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -202,7 +330,41 @@ export default function BudgetTracking() {
               <ScrollArea className="h-[300px] rounded-md border p-4">
                 {messBudgets.map((month) => (
                   <div key={month.id} className="mb-4 last:mb-0">
-                    <h3 className="text-lg font-semibold">{month.month}</h3>
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold">{month.month}</h3>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>{month.month} Mess Budget Details</DialogTitle>
+                          </DialogHeader>
+                          <div className="grid gap-4 py-4">
+                            <p>
+                              <strong>Budget:</strong> ${month.budget.toLocaleString()}
+                            </p>
+                            <p>
+                              <strong>Spent:</strong> ${month.spent.toLocaleString()}
+                            </p>
+                            <p>
+                              <strong>Remaining:</strong> ${(month.budget - month.spent).toLocaleString()}
+                            </p>
+                            <div>
+                              <h4 className="mb-2 font-semibold">Expense Proofs:</h4>
+                              <ul className="list-disc pl-5">
+                                {month.expenseProofs.map((proof, index) => (
+                                  <li key={index}>{proof}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                     <p>Budget: ${month.budget.toLocaleString()}</p>
                     <p>Spent: ${month.spent.toLocaleString()}</p>
                     <p>Remaining: ${(month.budget - month.spent).toLocaleString()}</p>
