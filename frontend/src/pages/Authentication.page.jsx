@@ -19,11 +19,13 @@ import {
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
 import axios from "axios"
+import { toast } from "react-toastify"
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showOTPVerification, setShowOTPVerification] = useState(false)
   const [otpSent, setOtpSent] = useState(false)
+  const [avatar, setAvatar] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -48,6 +50,7 @@ export default function AuthPage() {
           otp,
         }
       )
+      toast.success("OTP verified successfully")
       setEmail("")
       setPassword("")
       setName("")
@@ -56,16 +59,15 @@ export default function AuthPage() {
       setOtpSent(false)
 
       console.log("User Register successfully:", response.data)
-      
     } catch (error) {
       console.error("Error signing up:", error.response?.data || error.message)
-      // Handle signup error
+      
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setOtpSent(true)
+   
     try {
       const response = await axios.post(
         "https://hackfusion-2025.onrender.com/user/register",
@@ -76,9 +78,12 @@ export default function AuthPage() {
           avatar,
         }
       )
+      setOtpSent(true)
+      toast.success(  `User Register successfully, Email : ${email}`)
       console.log("User Register successfully:", response.data)
     } catch (error) {
-      console.error("Error signing up:", error.response?.data || error.message)
+      console.error("Error signing up:", error.response?.data )
+      toast.error(error.response?.data.status || error.message)
     }
   }
   const glassyButtonClass =

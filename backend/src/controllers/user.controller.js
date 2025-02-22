@@ -129,14 +129,15 @@ const VerifyOtp = async (req, res) => {
   const { email, otp } = req.body
   try {
     const user = await userRegisterModel.findOne({ email })
-    console.log("user", user)
+   
     if (!user) {
       return res.status(400).json({
         status: "Failed to verify otp",
         message: "User not found",
       })
     }
-    const otpcheck = user.isOtpCorrect(otp)
+    const otpcheck = await user.isOtpCorrect(otp)
+    console.log("otpcheck", otpcheck)
     if (!otpcheck) {
       return res.status(400).json({
         status: "Failed to verify otp",
