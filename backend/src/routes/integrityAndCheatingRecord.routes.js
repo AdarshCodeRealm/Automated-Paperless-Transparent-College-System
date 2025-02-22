@@ -1,5 +1,5 @@
 import { Router } from "express"
-
+import {upload} from "../middlewares/multer.middleware.js" 
 import {
   createViolation,
   getAllViolations,
@@ -15,7 +15,7 @@ router.get("/test", async (req, res) => {
   })
 })
 
-router.post("/", createViolation)
+router.post("/",upload.fields([{ name: "evidence", maxCount: 5 }]), createViolation)
 router.get("/", getAllViolations)
 router.delete("/:id", deleteViolation)
 

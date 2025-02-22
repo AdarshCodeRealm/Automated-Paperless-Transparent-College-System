@@ -2,13 +2,65 @@
 // ● If a stude nt is caught cheating in an exam, their details (name, reason, and proof) are publicly visible to all students.
 
 // Create a new violation record
-
+import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import Violation from "../models/cheatingRecord.model.js"
 const createViolation = async (req, res) => {
+  const {
+    registrationNumber,
+    fullName,
+    year,
+    branch,
+    email,
+    subjectCode,
+    subjectName,
+    invigilatorName,
+    invigilatorID,
+    reason,
+  } = req.body
   try {
-    const violation = new Violation(req.body)
+    if (
+      !registrationNumber ||
+      !fullName ||
+      !year ||
+      !branch ||
+      !email ||
+      !subjectCode ||
+      !subjectName ||
+      !invigilatorName ||
+      !invigilatorID ||
+      !reason
+    ) {
+      return res.status(400).json({ message: "All fields are required" })
+    }
+    const attachments = req.files?.evidence
+    const evidences = []
+    if (attachments) {
+      for (const file of attachments) {
+        const result = await uploadOnCloudinary(file.path)
+        evidences.push(result.url)
+      }
+    }
+
+    const evidence = req.files
+    console.log(evidence)
+    const violation = new Violation(
+      {
+        registrationNumber,
+        fullName,
+        year,
+        branch,
+        email,
+        subjectCode,
+        subjectName,
+        invigilatorName,
+        invigilatorID,
+        reason,
+
+        evidence: evidences,
+      }
+    )
     await violation.save()
-    res.status(201).json(violation)
+    res.status(201).json({message: "Violation created", violation})
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
@@ -38,7 +90,4 @@ const deleteViolation = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
-export {
-  createViolation,
-  getAllViolations,
-  deleteViolation,}
+export { createViolation, getAllViolations, deleteViolation }
