@@ -24,24 +24,25 @@ import {
 
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "react-toastify"
 function ComplaintList() {
   const [title, setTitle] = useState("")
   const [description, setContent] = useState("")
   const [category, setCategory] = useState("") // State to store selected fruit
   const [attachments, setAttachments] = useState([])
-  const [error, setError] = useState("")
   const [filter, setFilter] = useState("latest") // Default filter
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
     if (!title || !description || !category) {
-      setError("All fields are required")
+      toast.error("All fields are required")
       return
     }
     try {
+      console.log(title, description, category)
       axios
-        .post("http://localhost:3000/complaints", {
+        .post("https://hackfusion-2025.onrender.com/complaint/createComplaint", {
           title,
           description,
           category,
@@ -49,6 +50,7 @@ function ComplaintList() {
         })
         .then((res) => {
           console.log(res)
+          toast.success("Complaint submitted successfully")
         })
     } catch (error) {
       console.log(error)
@@ -80,53 +82,10 @@ function ComplaintList() {
       comments: [],
     },
 
-    {
-      id: 3,
-      user: "parking_problems",
-      postedBy: "Commuter",
-      timeAgo: "2 months ago",
-      title: "Limited Parking",
-      content: "Finding parking on campus is a nightmare...",
-      votes: 6,
-      comments: [],
-    },
-    {
-      id: 4,
-      user: "anonymous_user",
-      postedBy: "[deleted]",
-      timeAgo: "5 months ago",
-      title: "Poor Learning Environment",
-      content: "I came into college with a thirst... ",
-      votes: 25,
-      comments: ["I feel the same way!", "It's challenging."],
-    },
-
-    {
-      id: 5,
-      user: "college issues",
-      postedBy: "Commuter",
-      timeAgo: "2 months ago",
-      title: "Limited Parking",
-      content: "Finding parking on campus is a nightmare...",
-      votes: 6,
-      comments: [],
-    },
-    // ... (rest of your complaint data)
-    {
-      id: 6,
-      user: "parking_problems",
-      postedBy: "Commuter",
-      timeAgo: "2 months ago",
-      title: "Limited Parking",
-      content: "Finding parking on campus is a nightmare...",
-      votes: 6,
-      comments: [],
-    },
-    // ... (rest of your complaint data)
   ]
   const toggleFilter = () => {
-    setFilter(filter === "latest" ? "top-voted" : "latest");
-  };
+    setFilter(filter === "latest" ? "top-voted" : "latest")
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
@@ -142,7 +101,6 @@ function ComplaintList() {
 
       <Dialog>
         <DialogTrigger asChild>
-        
           <Button className="fixed bottom-4 right-4 shadow-lg" size="lg">
             <AlertCircle className="mr-2 h-4 w-4" />
             Raise Complaint
@@ -208,8 +166,11 @@ function ComplaintList() {
           </form>
         </DialogContent>
       </Dialog>
-      
-      <Button className="fixed bottom-16  right-4 shadow-lg" onClick={toggleFilter}>
+
+      <Button
+        className="fixed bottom-16  right-4 shadow-lg"
+        onClick={toggleFilter}
+      >
         {filter === "latest" ? "Top Voted" : "Latest"}
       </Button>
     </div>

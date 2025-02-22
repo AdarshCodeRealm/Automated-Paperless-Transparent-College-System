@@ -1,4 +1,3 @@
-import { Routes, Route } from "react-router-dom"
 import AuthPage from "./pages/Authentication.page.jsx"
 import HomePage from "./pages/Home.jsx"
 import ElectionPage from "./pages/Elections.jsx"

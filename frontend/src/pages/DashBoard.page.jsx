@@ -31,6 +31,13 @@ export default function Layout({ children }) {
     { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
     { title: "Applications & Approvals", icon: AppWindow, path: "/dashboard/applicationapproval" },
     { title: "Budget & Sponsorships", icon: BadgeIndianRupee, path: "/dashboard/budgetSponsorshipTracking" },
+    { title: "Book Facilities", icon: Home, path: "/dashboard" },
+    { title: "Notify Parents", icon: CreditCard, path: "/dashboard/healthAndLeaveNotify" },
+    { title: "Election", icon:Users , path: "/dashboard/elections" },
+    { title: "Academic Integrity", icon:Users , path: "/dashboard/CheatingRecords" },
+    { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
+    { title: "Applications & Approvals", icon: Video, path: "/dashboard/applicationapproval" },
+    { title: "Budget & Sponsorships", icon: Settings, path: "/dashboard/budgetSponsorshipTracking" },
     { title: "Help", icon: HelpCircle, path: "/dashboard/help" },
   ]
 
