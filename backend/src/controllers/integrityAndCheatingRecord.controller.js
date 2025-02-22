@@ -42,7 +42,6 @@ const createViolation = async (req, res) => {
     }
 
     const evidence = req.files
-    console.log(evidence)
     const violation = new Violation(
       {
         registrationNumber,
