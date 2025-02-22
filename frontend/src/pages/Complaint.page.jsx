@@ -74,7 +74,7 @@ function ComplaintList() {
       console.log(title, description, category);
       const id = localStorage.getItem("id");
       axios
-        .post("http://localhost:5000/complaint/createComplaint", {
+        .post("https://hackfusion-2025.onrender.com/complaint/createComplaint", {
           title,
           description,
           category,
