@@ -20,6 +20,11 @@ export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navLinks = [
+    { title: "Organization", icon: Home, path: "/" },
+    { title: "Projects", icon: FileText, path: "/projects" },
+    { title: "Notify Parents", icon: CreditCard, path: "/dashboard/healthAndLeaveNotify" },
+    { title: "Election", icon: Users, path: "/dashboard/elections" },
+    { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
     { title: "DashBoard", icon: Home, path: "/dashboard" },
     { title: "Cheating Records", icon: FileText, path: "/projects" },
     { title: "Notify Parents", icon: CreditCard, path: "/healthAndLeaveNotify" },

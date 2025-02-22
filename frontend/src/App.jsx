@@ -10,7 +10,7 @@ import HealthAndLeaveNotify from "./pages/Health&Leave.page.jsx";
 import RestrictedAccess from "./pages/RestrictedAccess.jsx"
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashBoard",
     element: <Dashboard />, // Use the Layout component here
     children: [
       // { index: true, element: <AuthPage /> }, // Index route for /
@@ -22,10 +22,10 @@ const router = createBrowserRouter([
       {path:"/restrict",element:<RestrictedAccess/>},
     ],
   },
-  // {
-  //   path: "/auth", // If you still want a separate auth route
-  //   element: <AuthPage />,
-  // },
+  {
+    path: "/",
+    element: <AuthPage />,
+  },
 ])
 
 function App() {

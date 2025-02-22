@@ -9,11 +9,12 @@ import {
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import { ApiError } from "../utils/utils/ApiError.js"
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await userModel.findById(userId)
     if (!user) {
-      throw new ApiError(404, "User not found")
+      res.status(404).json({ message: "User not found" })
     }
     const accessToken = user.generateAccessToken()
     // console.log(accessToken)
@@ -129,14 +130,15 @@ const VerifyOtp = async (req, res) => {
   const { email, otp } = req.body
   try {
     const user = await userRegisterModel.findOne({ email })
-    console.log("user", user)
+
     if (!user) {
       return res.status(400).json({
         status: "Failed to verify otp",
         message: "User not found",
       })
     }
-    const otpcheck = user.isOtpCorrect(otp)
+    const otpcheck = await user.isOtpCorrect(otp)
+    console.log("otpcheck", otpcheck)
     if (!otpcheck) {
       return res.status(400).json({
         status: "Failed to verify otp",
@@ -179,7 +181,7 @@ const VerifyOtp = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body
   if (!password && !email) {
-    throw new ApiError(400, `email or password is required : ${email}`)
+    res.status(400).json({ message: "email or password is required" })
   }
   const user = await userModel
     .findOne({ email })
