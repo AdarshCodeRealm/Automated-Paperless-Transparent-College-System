@@ -57,33 +57,60 @@ export default function AuthPage() {
       setLastName("")
       setOtp("")
       setOtpSent(false)
+      setIsLogin(!isLogin)
 
       console.log("User Register successfully:", response.data)
     } catch (error) {
       console.error("Error signing up:", error.response?.data || error.message)
-      
+      toast.error(error.response?.data.message)
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-   
-    try {
-      const response = await axios.post(
-        "https://hackfusion-2025.onrender.com/user/register",
-        {
-          name: name + " " + lastName,
-          email,
-          password,
-          avatar,
-        }
-      )
-      setOtpSent(true)
-      toast.success(  `User Register successfully, Email : ${email}`)
-      console.log("User Register successfully:", response.data)
-    } catch (error) {
-      console.error("Error signing up:", error.response?.data )
-      toast.error(error.response?.data.status || error.message)
+
+    if (isLogin) {
+      console.log("Login logic")
+      console.log(email, password)
+      try {
+        const response = await axios.get(
+          "https://hackfusion-2025.onrender.com/user/login",
+          {
+            email,
+            password,
+          }
+        )
+        toast.success(`Logged in successfully, Email: ${email}`)
+        console.log("Logged in successfully:", response.data)
+      } catch (error) {
+        console.error("Error logging in:", error.response?.data)
+        toast.error("Invalid Login credentials")
+      }
+    } else {
+      // Registration logic
+      console.log(password)
+      try {
+        const response = await axios.post(
+          "https://hackfusion-2025.onrender.com/user/register",
+          {
+            name: name + " " + lastName,
+            email,
+            password,
+            avatar,
+          }
+        )
+        setOtpSent(true)
+        setName("")
+        setLastName("")
+
+        setPassword("")
+        setAvatar(null)
+        toast.success(`User Registered successfully, Email: ${email}`)
+        console.log("User Registered successfully:", response.data)
+      } catch (error) {
+        console.error("Error registering:", error.response?.data)
+        toast.error(error.response?.data.status || error.message)
+      }
     }
   }
   const glassyButtonClass =

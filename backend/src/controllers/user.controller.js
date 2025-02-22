@@ -9,6 +9,7 @@ import {
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import {ApiError} from "../utils/utils/ApiError.js"
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await userModel.findById(userId)
