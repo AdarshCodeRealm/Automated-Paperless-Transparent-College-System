@@ -1,6 +1,7 @@
 import express from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import { verifyJWT } from "../middlewares/auth.middleware.js"
 import {
   userRegister,
   loginUser,
@@ -28,7 +29,7 @@ router.post("/login", loginUser)
 router.get("/profile", authenticate, getProfile)
 
 // Register a Candidate
-router.post("/registercandidate", authenticate, registerCandidate)
+router.post("/registercandidate",verifyJWT,registerCandidate) 
 
 // Get All Candidates
 router.get("/candidates", getAllCandidates)

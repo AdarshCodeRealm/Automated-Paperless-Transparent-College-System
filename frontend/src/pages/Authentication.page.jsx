@@ -18,19 +18,23 @@ import {
   Shield,
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
+import { useNavigate } from 'react-router-dom';
+
 import axios from "axios"
+import { toast } from "react-toastify"
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showOTPVerification, setShowOTPVerification] = useState(false)
   const [otpSent, setOtpSent] = useState(false)
+  const [avatar, setAvatar] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [otp, setOtp] = useState("") // State for OTP input
-
+  const navigate = useNavigate();
   const handleForgotPassword = (e) => {
     e.preventDefault()
     // Handle sending OTP
@@ -48,37 +52,72 @@ export default function AuthPage() {
           otp,
         }
       )
+      toast.success("OTP verified successfully")
       setEmail("")
       setPassword("")
       setName("")
       setLastName("")
       setOtp("")
       setOtpSent(false)
+      setIsLogin(!isLogin)
 
       console.log("User Register successfully:", response.data)
-      
     } catch (error) {
       console.error("Error signing up:", error.response?.data || error.message)
-      // Handle signup error
+      toast.error(error.response?.data.message)
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setOtpSent(true)
-    try {
-      const response = await axios.post(
-        "https://hackfusion-2025.onrender.com/user/register",
-        {
-          name: name + " " + lastName,
-          email,
-          password,
-          avatar,
-        }
-      )
-      console.log("User Register successfully:", response.data)
-    } catch (error) {
-      console.error("Error signing up:", error.response?.data || error.message)
+
+    if (isLogin) {
+      console.log("Login logic")
+      console.log(email, password)
+
+      try {
+        const response = await axios.post(
+          "https://hackfusion-2025.onrender.com/user/login",
+          {
+            email,
+            password,
+          }
+        )
+        setEmail("")
+        setPassword("")
+        toast.success(`Logged in successfully, Email: ${email}`)
+        
+        navigate('/dashboard/home');
+        console.log("Logged in successfully:", response.data)
+      } catch (error) {
+        console.error("Error logging in:", error.response?.data)
+        toast.error("Invalid Login credentials..", error.message)
+      }
+    } else {
+      // Registration logic
+      console.log(password)
+      try {
+        const response = await axios.post(
+          "https://hackfusion-2025.onrender.com/user/register",
+          {
+            name: name + " " + lastName,
+            email,
+            password,
+            avatar,
+          }
+        )
+        setOtpSent(true)
+        setName("")
+        setLastName("")
+
+        setPassword("")
+        setAvatar(null)
+        toast.success(`User Registered successfully, Email: ${email}`)
+        console.log("User Registered successfully:", response.data)
+      } catch (error) {
+        console.error("Error registering:", error.response?.data)
+        toast.error(error.response?.data.status || error.message)
+      }
     }
   }
   const glassyButtonClass =

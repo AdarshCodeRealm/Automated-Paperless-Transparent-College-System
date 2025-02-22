@@ -8,6 +8,7 @@ import {userProfile,registerUser} from '../models/user.model.js';
 import Candidate from '../models/candidate.model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import {verifyJWT} from "../middlewares/auth.middleware.js"
 
 // User Controllers
 const userRegister = async (req, res) => {
@@ -67,12 +68,12 @@ const getProfile = async (req, res) => {
 // Candidate Controllers
 const registerCandidate = async (req, res) => {
     try {
-        const { name, position} = req.body;
-
+        const {name,position,Email} = req.body;
+        console.log(req.body)
         const newCandidate = new Candidate({
-            name,
+            name:req.user._id,
             position,
-            votes
+            Email
         });
 
         await newCandidate.save();

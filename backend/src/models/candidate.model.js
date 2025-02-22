@@ -7,7 +7,8 @@ const candidateSchema = new Schema({
         required:true
     },
     position:{type:String,required:true},
-    votes:{type:Number,default:0}
+    year:{type:String},
+    Email:{type:String,required:true},
 });
 
 export default mongoose.model("Candidate", candidateSchema)

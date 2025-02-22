@@ -9,11 +9,12 @@ import {
 import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import { ApiError } from "../utils/utils/ApiError.js"
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await userModel.findById(userId)
     if (!user) {
-      throw new ApiError(404, "User not found")
+      res.status(404).json({ message: "User not found" })
     }
     const accessToken = user.generateAccessToken()
     // console.log(accessToken)
@@ -32,7 +33,39 @@ const generateAccessAndRefereshTokens = async (userId) => {
 }
 
 const registerUser = async (req, res) => {
-  const { name, email, password, role, mobile, bio, department } = req.body
+  const { name, email, password, mobile, bio } = req.body
+
+  if (typeof email !== "string") {
+    return false // Handle cases where email is not a string
+  }
+  const validClgMail = email.toLowerCase().endsWith("@sggs.ac.in")
+  if (!validClgMail) {
+    return res.status(400).json({
+      status: "Not valid email address, please use college mail id",
+      message: `Invalid email : ${email}`,
+    })
+  }
+  const emailLower = email.toLowerCase()
+  const department = emailLower.includes("bcs")
+    ? "Computer Science"
+    : emailLower.includes("bec")
+      ? "Electronics and Communication"
+      : emailLower.includes("bme")
+        ? "Mechanical Engineering"
+        : emailLower.includes("bce")
+          ? "Civil Engineering"
+          : emailLower.includes("bec")
+            ? "Electrical and Electronics Engineering"
+            : emailLower.includes("bit")
+              ? "Information Technology"
+              : null // Default: unknown department
+
+  let role
+  if (department == null) {
+    role = "Professor"
+  } else {
+    role = "Student"
+  }
 
   const checkUserIsExist = await userModel.findOne({ email })
   if (checkUserIsExist) {
@@ -97,14 +130,15 @@ const VerifyOtp = async (req, res) => {
   const { email, otp } = req.body
   try {
     const user = await userRegisterModel.findOne({ email })
-    console.log("user", user)
+
     if (!user) {
       return res.status(400).json({
         status: "Failed to verify otp",
         message: "User not found",
       })
     }
-    const otpcheck = user.isOtpCorrect(otp)
+    const otpcheck = await user.isOtpCorrect(otp)
+    console.log("otpcheck", otpcheck)
     if (!otpcheck) {
       return res.status(400).json({
         status: "Failed to verify otp",
@@ -147,7 +181,7 @@ const VerifyOtp = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body
   if (!password && !email) {
-    throw new ApiError(400, `email or password is required : ${email}`)
+    res.status(400).json({ message: "email or password is required" })
   }
   const user = await userModel
     .findOne({ email })
@@ -160,7 +194,6 @@ const loginUser = async (req, res) => {
   }
 
   const isMatch = await user.isPasswordCorrect(password)
- 
 
   if (!isMatch) {
     return res.status(400).json({

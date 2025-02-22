@@ -1,5 +1,5 @@
 "use client"
-
+import axios from "axios"
 import React, { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -182,46 +182,48 @@ const voters = [
 export default function ElectionDashboard() {
   const [date, setDate] = useState(new Date())
   const [viewType, setViewType] = useState("table")
-  const [selectedYear, setSelectedYear] = useState("")
-  const [selectedPosition, setSelectedPosition] = useState("")
-  const [showYearSelect, setShowYearSelect] = useState(false)
-  const [showPositionSelect, setShowPositionSelect] = useState(false)
+  const [year,setYear] = useState("")
+  const[name,setName] = useState("")
+  const [email,setEmail] = useState("")
+  const [pos,setPosition] = useState("")
+
   const selectRef = useRef(null)
 
-  const handleSelectYearClick = () => {
-    setShowYearSelect(!showYearSelect)
-  }
 
-  const handleSelectPositionClick = () => {
-    setShowPositionSelect(!showPositionSelect)
-  }
 
-  const handleRegisterCandidate = (e) => {
+  const handleRegisterCandidate = async (e) => {
     e.preventDefault()
-    console.log("Candidate Registered", { selectedYear, selectedPosition })
-  }
-
-  const handleCastVote = () => {
-    console.log("Vote cast")
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        showYearSelect &&
-        selectRef.current &&
-        !selectRef.current.contains(event.target)
-      ) {
-        setShowYearSelect(false)
+    
+    const candidateData = {
+      name,
+      Email:email,
+      year:year,
+      position:pos
+    };
+  
+    console.log("Sending data:", candidateData);
+    try {
+      const response = await axios.post('https://localhost:5000/election/registercandidate', candidateData);
+      console.log("Candidate Registered Successfully:", response.data);
+  } catch (error) {
+      console.error("Error registering candidate:", error);
+      if (error.response) { // Check for server response errors
+          console.error("Server responded with status:", error.response.status);
+          console.error("Server response data:", error.response.data);
+      } else if (error.request) { // Check for request errors (no response)
+          console.error("No response received:", error.request);
+      } else { // Check for other errors
+          console.error("Request setup error:", error.message);
       }
-    }
+  }
+  }
 
-    document.addEventListener("mousedown", handleClickOutside)
+  const handleCastVote = (candidateName) => {
+    alert(`You voted for ${candidateName}`);
+    setShowCandidates(false);
+  };
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [showYearSelect])
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-8 rounded-3xl">
@@ -262,75 +264,52 @@ export default function ElectionDashboard() {
               <form onSubmit={handleRegisterCandidate} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="photo">Photograph</Label>
-                  <Input id="photo" type="file" accept="image/*" required />
+                  <Input onChange={(e)=>setName(e.target.value)} id="name" required />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="year">Year</Label>
-                    <div ref={selectRef}>
-                      <Select onValueChange={(e) => setCategory(e)}>
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Select Year" />{" "}
+                    
+                      <Select onValueChange={(year) => setYear(year)}>
+                        <SelectTrigger id="year">
+                      
+                          <SelectValue placeholder="Select year" />
                         </SelectTrigger>
+                        
                         <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="1st Year">First Year</SelectItem>
-                            <SelectItem value="2nd year">Second Year</SelectItem>
-                            <SelectItem value="3rd year">Third Year</SelectItem>
-                            <SelectItem value="4th year">B.Tech</SelectItem>
-                          </SelectGroup>
+                            <SelectItem value="First Year">First Year</SelectItem>
+                            <SelectItem value="Second Year">Second Year</SelectItem>
+                            <SelectItem value="Third Year">Third Year</SelectItem>
+                            <SelectItem value="B.Tech">B.Tech</SelectItem>
                         </SelectContent>
+                        
                       </Select>
-                    </div>
+                    
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="regNumber">Registration Number</Label>
-                  <Input id="regNumber" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required />
+                  <Input onChange={(e)=>setEmail(e.target.value)}id="email" type="email" required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="position">Position Contesting For</Label>
+                  <Label htmlFor="position">Position</Label>
                   <div ref={selectRef}>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedPosition(value)
-                        setShowPositionSelect(false) // Dropdown close ho jayega
-                      }}
-                    >
-                      <SelectTrigger
-                        id="position"
-                        onClick={() =>
-                          setShowPositionSelect(!showPositionSelect)
-                        }
-                      >
-                        <SelectValue>
-                          {selectedPosition || "Select position"}
-                        </SelectValue>
+                    <Select onValueChange={(pos) => setPosition(pos)}>
+                      <SelectTrigger id="position">
+                        <SelectValue placeholder="Select position"/>
+                          
                       </SelectTrigger>
-                      {showPositionSelect && (
                         <SelectContent>
-                          <SelectItem value="1">
-                            Girls Representative
-                          </SelectItem>
-                          <SelectItem value="2">Cultural Secretary</SelectItem>
-                          <SelectItem value="3">Technical Secretary</SelectItem>
-                          <SelectItem value="4">Sports Secretary</SelectItem>
-                          <SelectItem value="5">Boys Representative</SelectItem>
+                          <SelectItem value="Girls Representative">Girls Representative</SelectItem>
+                          <SelectItem value="Cultural Secretary">Cultural Secretary</SelectItem>
+                          <SelectItem value="Technical Secretary">Technical Secretary</SelectItem>
+                          <SelectItem value="Sports Secretary">Sports Secretary</SelectItem>
+                          <SelectItem value="Boys Representative">Boys Representative</SelectItem>
                         </SelectContent>
-                      )}
                     </Select>
                   </div>
                 </div>
-                <Button type="submit">Submit</Button>
+                <Button onClick={handleRegisterCandidate}>Submit</Button>
               </form>
             </DialogContent>
           </Dialog>
