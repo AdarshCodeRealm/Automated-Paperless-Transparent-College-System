@@ -120,7 +120,7 @@ export default function BudgetTracking() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-8">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
       <h1 className="text-3xl font-bold text-center mb-8">Transparent College Budget & Sponsorship Tracking</h1>
 
       <Tabs defaultValue="sponsorships" className="space-y-4">

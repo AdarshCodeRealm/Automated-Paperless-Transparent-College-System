@@ -12,7 +12,7 @@ import CheatingRecords from "./pages/CheatingRecords.jsx";
 import BudgetAndSponsorshipTracking from "./pages/BudgetSponsorshipTracking.jsx";
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/dashboard",
     element: <Dashboard />, // Use the Layout component here
     children: [
       // { index: true, element: <AuthPage /> }, // Index route for /
@@ -20,19 +20,15 @@ const router = createBrowserRouter([
       { path: "elections", element: <ElectionPage /> },
       { path: "complaints", element: <ComplaintList /> },
       { path: "healthAndLeaveNotify", element: <HealthAndLeaveNotify /> },
-      {
-        path: "/auth", // If you still want a separate auth route
-        element: <AuthPage />,
-      },
       { path: "applicationApproval", element: <ApplicationApprovalSystem /> },
       { path: "cheatingRecords", element: <CheatingRecords /> },
       { path: "budgetSponsorshipTracking", element: <BudgetAndSponsorshipTracking /> },
     ],
   },
-  // {
-  //   path: "/auth", // If you still want a separate auth route
-  //   element: <AuthPage />,
-  // },
+  {
+    path: "/", // If you still want a separate auth route
+    element: <AuthPage />,
+  },
 ])
 
 function App() {

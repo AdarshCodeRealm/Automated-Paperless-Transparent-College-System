@@ -20,14 +20,14 @@ export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navLinks = [
-    { title: "Organization", icon: Home, path: "/" },
-    { title: "Projects", icon: FileText, path: "/projects" },
-    { title: "Notify Parents", icon: CreditCard, path: "/healthAndLeaveNotify" },
-    { title: "Election", icon: Users, path: "/elections" },
-    { title: "Complaints", icon: MessageSquare, path: "/complaints" }, 
-    { title: "Meetings", icon: Video, path: "/meetings" },
-    { title: "Settings", icon: Settings, path: "/settings" },
-    { title: "Help", icon: HelpCircle, path: "/help" },
+    { title: "Book Facilities", icon: Home, path: "/dashboard" },
+    { title: "Notify Parents", icon: CreditCard, path: "/dashboard/healthAndLeaveNotify" },
+    { title: "Election", icon:Users , path: "/dashboard/elections" },
+    { title: "Academic Integrity", icon:Users , path: "/dashboard/CheatingRecords" },
+    { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
+    { title: "Applications & Approvals", icon: Video, path: "/dashboard/applicationapproval" },
+    { title: "Budget & Sponsorships", icon: Settings, path: "/dashboard/budgetSponsorshipTracking" },
+    { title: "Help", icon: HelpCircle, path: "/dashboard/help" },
   ]
 
   return (
