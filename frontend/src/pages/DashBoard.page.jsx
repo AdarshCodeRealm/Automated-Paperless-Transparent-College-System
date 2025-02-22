@@ -14,19 +14,23 @@ import {
   Video,
   Settings,
   HelpCircle,
+  BadgeIndianRupee,
+  AppWindow,
+  SquareLibrary,
+  NotepadText,
 } from "lucide-react"
 import AuthPage from "./Authentication.page"
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navLinks = [
-    { title: "Book Facilities", icon: Home, path: "/dashboard" },
+    { title: "Book Facilities", icon: NotepadText, path: "/dashboard" },
     { title: "Notify Parents", icon: CreditCard, path: "/dashboard/healthAndLeaveNotify" },
     { title: "Election", icon:Users , path: "/dashboard/elections" },
-    { title: "Academic Integrity", icon:Users , path: "/dashboard/CheatingRecords" },
+    { title: "Academic Integrity", icon:SquareLibrary , path: "/dashboard/CheatingRecords" },
     { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
-    { title: "Applications & Approvals", icon: Video, path: "/dashboard/applicationapproval" },
-    { title: "Budget & Sponsorships", icon: Settings, path: "/dashboard/budgetSponsorshipTracking" },
+    { title: "Applications & Approvals", icon: AppWindow, path: "/dashboard/applicationapproval" },
+    { title: "Budget & Sponsorships", icon: BadgeIndianRupee, path: "/dashboard/budgetSponsorshipTracking" },
     { title: "Help", icon: HelpCircle, path: "/dashboard/help" },
   ]
 

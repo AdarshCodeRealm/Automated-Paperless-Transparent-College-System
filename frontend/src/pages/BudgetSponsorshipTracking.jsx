@@ -121,8 +121,22 @@ export default function BudgetTracking() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Transparent College Budget & Sponsorship Tracking</h1>
-
+      {/*<h1 className="text-3xl font-bold text-center mb-8">
+        Transparent College Budget & Sponsorship Tracking
+      </h1>*/}
+      {/*<Card className="bg-primary">
+        <CardHeader className="space-y-1 text-white">
+          <CardTitle className="text-2xl font-bold">
+            SRC/NUGS 2024 ELECTIONS
+          </CardTitle>
+        </CardHeader>
+      </Card> */}
+      <header className="border-b">
+        <div className="container flex h-16 items-center px-4">
+          <h1 className="text-2xl font-semibold">Budget & Sponsorship Tracker</h1>
+        </div>
+      </header>
+      <br />
       <Tabs defaultValue="sponsorships" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="sponsorships">Sponsorships</TabsTrigger>
