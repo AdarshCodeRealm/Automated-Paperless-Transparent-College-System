@@ -18,7 +18,7 @@ import {
   Shield,
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"
 
 import axios from "axios"
 import { toast } from "react-toastify"
@@ -34,7 +34,7 @@ export default function AuthPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [otp, setOtp] = useState("") // State for OTP input
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleForgotPassword = (e) => {
     e.preventDefault()
     // Handle sending OTP
@@ -78,11 +78,12 @@ export default function AuthPage() {
 
       try {
         const response = await axios.post(
-          "https://hackfusion-2025.onrender.com/user/login",
+          "http://localhost:5000/user/login",
           {
             email,
-            password,
-          }
+            password, 
+          },
+          { withCredentials: true }
         )
         setEmail("")
         setPassword("")
@@ -93,10 +94,10 @@ export default function AuthPage() {
         localStorage.setItem("accessToken", accessToken)
         localStorage.setItem("refreshToken", refreshToken)
         localStorage.setItem("email", email)
-        localStorage.setItem("name", response.data.user.name)
+        localStorage.setItem("name", response.data.user.name)  
         localStorage.setItem("id", response.data.user._id)
-        navigate('/dashboard/home');
-        
+        navigate("/dashboard")
+
         console.log("Logged in successfully:", response.data)
       } catch (error) {
         console.error("Error logging in:", error.response?.data)
