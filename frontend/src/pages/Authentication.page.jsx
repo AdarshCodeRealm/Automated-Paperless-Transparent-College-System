@@ -78,7 +78,7 @@ export default function AuthPage() {
 
       try {
         const response = await axios.post(
-          "http://localhost:5000/user/login",
+          "https://hackfusion-2025.onrender.com/user/login",
           {
             email,
             password, 
