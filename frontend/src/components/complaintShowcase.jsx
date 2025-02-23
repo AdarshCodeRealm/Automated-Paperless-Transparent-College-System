@@ -12,7 +12,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 function ComplaintShowcase({ complaint }) {
-  const [votes, setVotes] = useState(0); // Initialize votes to 0
+  const [votes, setVotes] = useState([complaint.upVote]); // Initialize votes to 0
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
@@ -52,18 +52,18 @@ useEffect(() => {
   }
 
   const handleDelete = () => {
-    // Implement delete logic here
   };
+
 
   const handleUpvote = async () => {
     try {
       const id = localStorage.getItem("id");
-      console.log(id);
-      setVotes((prev) => prev + 1);
+   
       
       const res =await axios.patch(
         `http://localhost:5000/complaint/toggleUpvote/${complaint._id}/${id}`
       );
+      setVotes(votes + 1);
       console.log(res);
       toast.success("Upvoted");
     } catch (error) {
@@ -116,7 +116,7 @@ useEffect(() => {
               >
                 <ArrowBigUp size={20} className="hover:text-orange-500" />
               </button>
-              <span className="text-xs font-medium px-1">{votes}</span>
+              <span className="text-xs font-medium px-1">{votes.length}</span>
               <button
                 onClick={handleDownvote}
                 className="flex items-center text-[#666668] hover:bg-[#272729] p-1 rounded transition-colors"
@@ -126,33 +126,33 @@ useEffect(() => {
             </div>
             <button
               onClick={() => setIsCommentOpen(!isCommentOpen)}
-              className="flex items-center gap-1 text-[#666668] hover:bg-[#272729] px-2 py-1 rounded"
+              className="flex items-center gap-1 text-[#666668] hover:text-[#D7DADC] hover:bg-[#272729] px-2 py-1 rounded"
             >
               <MessageSquare size={16} />
               <span className="text-xs font-medium">Comment</span>
             </button>
-            <button className="flex items-center text-[#666668] hover:bg-[#272729] px-2 py-1 rounded">
+            <button className="flex items-center hover:text-slate-300 text-[#666668] hover:bg-[#272729] px-2 py-1 rounded">
               <Trash className="h-4 w-4 " />
             </button>
           </div>
 
           {isCommentOpen && (
-            <div className="mt-4 border-t border-[#343536] pt-4">
+            <div className="mt-4  rounded-3xl border-[#343536] ">
               <form onSubmit={handleCommentSubmit} className="mb-4">
-                <div className="flex gap-2">
+                <div className="rounded-xl flex border-2 border-[#343536] rounded-2xlp-2">
                   <input
                     type="text"
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     placeholder="What are your thoughts?"
-                    className="flex-1 bg-[#272729] text-[#D7DADC] rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4fbcff]"
+                    className="flex-1 border-gray-100 m-1 text-[#D7DADC] rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4fbcff]"
                   />
                   <button
                     type="submit"
                     disabled={!commentText.trim()}
-                    className="bg-[#4fbcff] text-black px-4 py-2 rounded text-sm font-medium hover:bg-[#4fbcff]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="bg-black text-white px-4 py-2 my-1 mr-1 rounded text-sm font-medium hover:bg-[#4fbcff]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    <Send size={14} />
+                    <Send size={16} />
                     Comment
                   </button>
                 </div>
@@ -182,14 +182,15 @@ useEffect(() => {
 
 ComplaintShowcase.propTypes = {
   complaint: PropTypes.shape({
-    _id: PropTypes.string.isRequired, // Added _id validation
-    user: PropTypes.string.isRequired,
-    postedBy: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired, // Added createdAt validation
+    _id: PropTypes.string.isRequired,
+    user: PropTypes.string,
+    postedBy: PropTypes.string,
+    createdAt: PropTypes.string.isRequired, 
     title: PropTypes.string.isRequired,
+    voteCount: PropTypes.number,
     description: PropTypes.string.isRequired,
-    upVote: PropTypes.arrayOf(PropTypes.string).isRequired, // Corrected prop type
-    comments: PropTypes.arrayOf(PropTypes.string).isRequired,
+    upVote: PropTypes.arrayOf(PropTypes.string), 
+    comments: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
 };
 

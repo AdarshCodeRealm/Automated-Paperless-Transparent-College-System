@@ -308,7 +308,14 @@ export default function AdminPage() {
             {records &&
               records.map((record) => (
                 <TableRow key={record._id}>
-                  <TableCell>{record.createdAt}</TableCell>
+                  <TableCell>
+                    {record.createdAt
+                      ? new Date(record.createdAt).toLocaleDateString(
+                          undefined,
+                          { day: "numeric", month: "short", year: "numeric" }
+                        )
+                      : "N/A"}
+                  </TableCell>
                   <TableCell>{record.fullName}</TableCell>
                   <TableCell>{record.invigilatorName}</TableCell>
                   <TableCell className="max-w-[200px] truncate">

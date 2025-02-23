@@ -185,6 +185,7 @@ export default function ElectionDashboard() {
   const [selectedPosition, setSelectedPosition] = useState("")
   const [showYearSelect, setShowYearSelect] = useState(false)
   const [showPositionSelect, setShowPositionSelect] = useState(false)
+
   const selectRef = useRef(null)
 
   useEffect(() => {
@@ -357,8 +358,7 @@ export default function ElectionDashboard() {
               <Vote className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">10,234</div>
-              <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">{Array.isArray(voters) ? `${voters.filter(voter => voter.filer === true).length}/${voters.length}` : "Invalid input"}</div>              <p className="text-xs text-muted-foreground">
                 collected last week
               </p>
             </CardContent>
@@ -661,7 +661,7 @@ export default function ElectionDashboard() {
                           <TableCell className="font-medium">
                             {voter.name}
                           </TableCell>
-                          <TableCell>{voter.email}</TableCell>
+                          <TableCell>{voter.email ? voter.email.substring(0, voter.email.indexOf('@')) : "N/A"}</TableCell>
                           <TableCell>{voter.department}</TableCell>
                           <TableCell>{voter.role}</TableCell>
                           <TableCell>{voter.voted ? "Yes" : "No"}</TableCell>

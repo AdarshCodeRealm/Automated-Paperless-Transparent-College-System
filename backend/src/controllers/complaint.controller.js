@@ -7,15 +7,81 @@ import { uploadOnCloudinary } from "../utils/utils/cloudinary.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { Complaint, Comment } from "../models/complaint.model.js"
 import { userProfile } from "../models/user.model.js"
-const createComplaint = async (req, res) => {
-  const { title, description, category, status,id} = req.body
-  console.log(id)
-  // const { attachments } = req.files
-  const userData = await userProfile.findById(new mongoose.Types.ObjectId(id))
-  console.log(userData)
-  if (!userData) {
-    return res.status(404).json({ message: "User not found" })
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+
+const apiKey = "AIzaSyAlMnfSJArVX8z9iBeNGayWomUxFR3ce1c";
+const genAI = new GoogleGenerativeAI(apiKey);
+
+
+const schema = {
+  description: "Complaint content check result",
+  type: SchemaType.OBJECT,
+  properties: {
+    safe: {
+      type: SchemaType.BOOLEAN,
+      description: "Indicates whether the content is safe",
+    },
+    reason: {
+      type: SchemaType.STRING,
+      description: "Reason for being unsafe (if applicable)",
+      nullable: true,
+    },
+  },
+  required: ["safe"],
+};
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: schema,
+  },
+});
+async function isContentVulgar(text) {
+  try {
+    const safetySettings = [
+      {
+        category: "HARM_CATEGORY_HATE_SPEECH",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE",
+      },
+      {
+        category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE",
+      },
+      {
+        category: "HARM_CATEGORY_HARASSMENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE",
+      },
+      {
+        category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE",
+      },
+    ];
+
+    const result = await model.generateContent({
+      contents: [{ parts: [{ text: text }] }],
+      safetySettings: safetySettings,
+    });
+
+    const response = result.response;
+    if (response.promptFeedback && response.promptFeedback.blockReason) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error checking content safety:", error);
+    return true; // Default to block if error occurs
   }
+}
+
+// const createComplaint = async (req, res) => {
+//   const { title, description, category, status,id} = req.body
+//   console.log(id)
+//   // const { attachments } = req.files
+//   const userData = await userProfile.findById(new mongoose.Types.ObjectId(id))
+//   console.log(userData)
+//   if (!userData) {
+//     return res.status(404).json({ message: "User not found" })
+//   }
 
   // const images = []
   // const videos = []
@@ -40,24 +106,60 @@ const createComplaint = async (req, res) => {
 
   // const cloudinaryAttachments = [...cloudinaryImagesUrl, ...cloudinaryVideosUrl]
 
-  const newComplaint = {
-    title,
-    description,
-    category,
-    status,
-    // attachments: cloudinaryAttachments,
-    raisedBy:userData._id
+//   const newComplaint = {
+//     title,
+//     description,
+//     category,
+//     status,
+//     // attachments: cloudinaryAttachments,
+//     raisedBy:userData._id
+//   }
+
+//   const createdComplaint = await Complaint.create(newComplaint)
+//   await createdComplaint.save()
+
+//   res.status(200).json({
+//     status: "success",
+//     message: "complaint raised",
+//     complaint: createdComplaint,
+//   })
+// }
+
+const createComplaint = async (req, res) => {
+  try {
+    const { title, description, category, status, id } = req.body;
+
+    const userData = await userProfile.findById(new mongoose.Types.ObjectId(id));
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (await isContentVulgar(title) || await isContentVulgar(description)) {
+      return res.status(400).json({ message: "Title or description contains inappropriate content." });
+    }
+
+    const newComplaint = {
+      title,
+      description,
+      category,
+      status,
+      raisedBy: userData._id,
+    };
+
+    const createdComplaint = await Complaint.create(newComplaint);
+    await createdComplaint.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "complaint raised",
+      complaint: createdComplaint,
+    });
+  } catch (error) {
+    console.error("Error creating complaint:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
+};
 
-  const createdComplaint = await Complaint.create(newComplaint)
-  await createdComplaint.save()
-
-  res.status(200).json({
-    status: "success",
-    message: "complaint raised",
-    complaint: createdComplaint,
-  })
-}
 const toggleUpvote = async (req, res) => {
   try {
    

@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     element: <Dashboard />, // Use the Layout component here
     children: [
       // { index: true, element: <AuthPage /> }, // Index route for /
-      { path: "home", element: <HomePage /> },
+      { path: "", element: <HomePage /> },
       { path: "elections", element: <ElectionPage /> },
       { path: "complaints", element: <ComplaintList /> },
       { path: "healthAndLeaveNotify", element: <HealthAndLeaveNotify /> },
