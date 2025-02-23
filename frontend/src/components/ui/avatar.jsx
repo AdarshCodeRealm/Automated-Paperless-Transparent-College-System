@@ -1,35 +1,33 @@
-    import * as React from "react";
-    import { cn } from "@/lib/utils";
+import * as React from "react"
+import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
-    const Avatar = React.forwardRef(({ className, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className)}
-        {...props}
-    />
-    ));
-    Avatar.displayName = "Avatar";
+import { cn } from "@/lib/utils"
 
-    const AvatarImage = React.forwardRef(({ className, src, alt, ...props }, ref) => (
-    <img
-        ref={ref}
-        src={src}
-        alt={alt}
-        className={cn("h-full w-full object-cover", className)}
-        {...props}
-    />
-    ));
-    AvatarImage.displayName = "AvatarImage";
+const Avatar = React.forwardRef(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Root
+    ref={ref}
+    className={cn("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className)}
+    {...props} />
+))
+Avatar.displayName = AvatarPrimitive.Root.displayName
 
-    const AvatarFallback = React.forwardRef(({ className, children, ...props }, ref) => (
-    <span
-        ref={ref}
-        className={cn("flex h-full w-full items-center justify-center bg-muted text-muted-foreground", className)}
-        {...props}
-    >
-        {children}
-    </span>
-    ));
-    AvatarFallback.displayName = "AvatarFallback";
+const AvatarImage = React.forwardRef(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Image
+    ref={ref}
+    className={cn("aspect-square h-full w-full", className)}
+    {...props} />
+))
+AvatarImage.displayName = AvatarPrimitive.Image.displayName
 
-    export { Avatar, AvatarImage, AvatarFallback };
+const AvatarFallback = React.forwardRef(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Fallback
+    ref={ref}
+    className={cn(
+      "flex h-full w-full items-center justify-center rounded-full bg-muted",
+      className
+    )}
+    {...props} />
+))
+AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
+
+export { Avatar, AvatarImage, AvatarFallback }

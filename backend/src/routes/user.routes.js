@@ -19,7 +19,7 @@ router.post(
 
 router.post("/verifyOtp", VerifyOtp)
 router.post("/login", loginUser)
-router.get("/logout",verifyJWT, logoutUser) 
+router.post("/logout",verifyJWT, logoutUser) 
 router.get("/getCurrentUser", getCurrentUser)
 router.get("/forgetPassword", forgetPassword)
 router.patch("/resetPassword", resetPassword)

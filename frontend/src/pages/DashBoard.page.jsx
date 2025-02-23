@@ -1,5 +1,11 @@
 "use client"
 import { Outlet } from "react-router-dom"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import ProfileNav from "@/components/ProfileNav"
 import { useState } from "react"
 import {
   Bell,
@@ -18,17 +24,40 @@ import {
 import AuthPage from "./Authentication.page"
 import { toast } from "react-toastify"
 import { Avatar } from "@/components/ui/avatar"
+
+const defaultProfile = {
+  name: "Eugene An",
+  role: "Prompt Engineer",
+  avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
+  subscription: "Free Trial",
+} 
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navLinks = [
     { title: "Book Facilities", icon: Home, path: "/dashboard" },
-    { title: "Notify Parents", icon: CreditCard, path: "/dashboard/healthAndLeaveNotify" },
-    { title: "Election", icon:Users , path: "/dashboard/elections" },
-    { title: "Academic Integrity", icon:Users , path: "/dashboard/CheatingRecords" },
-    { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" }, 
-    { title: "Applications & Approvals", icon: Video, path: "/dashboard/applicationapproval" },
-    { title: "Budget & Sponsorships", icon: Settings, path: "/dashboard/budgetSponsorshipTracking" },
+    {
+      title: "Notify Parents",
+      icon: CreditCard,
+      path: "/dashboard/healthAndLeaveNotify",
+    },
+    { title: "Election", icon: Users, path: "/dashboard/elections" },
+    {
+      title: "Academic Integrity",
+      icon: Users,
+      path: "/dashboard/CheatingRecords",
+    },
+    { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" },
+    {
+      title: "Applications & Approvals",
+      icon: Video,
+      path: "/dashboard/applicationapproval",
+    },
+    {
+      title: "Budget & Sponsorships",
+      icon: Settings,
+      path: "/dashboard/budgetSponsorshipTracking",
+    },
     { title: "Help", icon: HelpCircle, path: "/dashboard/help" },
   ]
 
@@ -54,19 +83,24 @@ export default function Layout({ children }) {
             <button className="rounded-full p-2 hover:bg-slate-700">
               <Bell className="h-5 w-5" />
             </button>
-            <button className="rounded-full p-2 hover:bg-accent " onClick={() => {
-              localStorage.removeItem("accessToken")
-              localStorage.removeItem("refreshToken")
-              localStorage.removeItem("name")
-              localStorage.removeItem("email")
-              localStorage.removeItem("id")
-              toast.success("Logged out successfully")
-
-              window.location.href = "/"
-            }}>
-              <Avatar className="h-5 w-5 "  />
-              <span className="hidden md:block text-sm font-medium">{localStorage.getItem("name")}</span>
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="focus:outline-none">
+                <img
+                  src="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png"
+                  alt="User avatar"
+                  width={28}
+                  height={28}
+                  className="rounded-full ring-2 ring-gray-200 dark:ring-[#2B2B30] sm:w-8 sm:h-8 cursor-pointer"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                sideOffset={8}
+                className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
+              >
+                <ProfileNav  userProfile = {defaultProfile}/>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </nav>
