@@ -4,9 +4,9 @@ import {
   loginUser,
   registerUser,
   logoutUser,
-  getCurrentUser,
   forgetPassword,
-  resetPassword,
+  resetPassword,getCurrentUser,
+  getUsers
 } from "../controllers/user.controller.js"
 import { VerifyOtp } from "../controllers/user.controller.js"
 const router = Router()
@@ -23,6 +23,6 @@ router.get("/logout",verifyJWT, logoutUser)
 router.get("/getCurrentUser", getCurrentUser)
 router.get("/forgetPassword", forgetPassword)
 router.patch("/resetPassword", resetPassword)
-
+router.route("/").get(getUsers) 
 
 export default router

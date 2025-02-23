@@ -329,7 +329,19 @@ const resetPassword = async (req, res) => {
   }
 }
 
+
+const getUsers = async(req,res) =>{
+    try {
+        const users = await userModel.find().select('-password -refreshToken -otp')
+        return res.status(200).json({message:"Users fetched successfully",users})
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: "Internal server error" })
+    }
+}
+
 export {
+  getUsers,
   registerUser,
   VerifyOtp,
   loginUser,

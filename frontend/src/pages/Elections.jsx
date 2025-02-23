@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useInsertionEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -58,7 +58,6 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select"
-
 const mockData = [
   { name: "John McCarthy One", votes: 75, percentage: "30%" },
   { name: "Jane McCarthy Two", votes: 50, percentage: "20%" },
@@ -178,9 +177,9 @@ const voters = [
     voted: false,
   },
 ]
-
+import axios from "axios"
 export default function ElectionDashboard() {
-  const [date, setDate] = useState(new Date())
+  const [voters, setVoters] = useState([])
   const [viewType, setViewType] = useState("table")
   const [selectedYear, setSelectedYear] = useState("")
   const [selectedPosition, setSelectedPosition] = useState("")
@@ -188,6 +187,17 @@ export default function ElectionDashboard() {
   const [showPositionSelect, setShowPositionSelect] = useState(false)
   const selectRef = useRef(null)
 
+  useEffect(() => {
+    fetchData()
+  }, [])
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/user")
+      setVoters(response.data.users)
+    } catch (error) {
+      console.error("Error fetching data:", error)
+    }
+  }
   const handleSelectYearClick = () => {
     setShowYearSelect(!showYearSelect)
   }
@@ -274,7 +284,9 @@ export default function ElectionDashboard() {
                           <SelectGroup>
                             <SelectLabel>Fruits</SelectLabel>
                             <SelectItem value="1st Year">First Year</SelectItem>
-                            <SelectItem value="2nd year">Second Year</SelectItem>
+                            <SelectItem value="2nd year">
+                              Second Year
+                            </SelectItem>
                             <SelectItem value="3rd year">Third Year</SelectItem>
                             <SelectItem value="4th year">B.Tech</SelectItem>
                           </SelectGroup>
@@ -649,9 +661,9 @@ export default function ElectionDashboard() {
                           <TableCell className="font-medium">
                             {voter.name}
                           </TableCell>
-                          <TableCell>{voter.regNumber}</TableCell>
-                          <TableCell>{voter.course}</TableCell>
-                          <TableCell>{voter.year}</TableCell>
+                          <TableCell>{voter.email}</TableCell>
+                          <TableCell>{voter.department}</TableCell>
+                          <TableCell>{voter.role}</TableCell>
                           <TableCell>{voter.voted ? "Yes" : "No"}</TableCell>
                         </TableRow>
                       ))}
