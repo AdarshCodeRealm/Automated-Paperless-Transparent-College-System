@@ -1,9 +1,10 @@
 import { Navigate } from "react-router-dom"
 import PropTypes from "prop-types"
 import DashBoard from "../pages/DashBoard.page.jsx"
-const ProtectedRoute = ({ isAuthenticated, redirectPath = "/auth" }) => {
+
+const ProtectedRoute = ({ isAuthenticated }) => {
   if (!isAuthenticated) {
-    return <Navigate to={redirectPath} replace />
+    return <Navigate to="/login" />
   }
   return <DashBoard />
 }

@@ -130,7 +130,6 @@ export default function Layout({ children }) {
       {/* Main Content */}
       <main className="min-h-[calc(100vh-3.5rem)] pt-14 md:ml-64">
         <div className="p-4">
-          {/* {children} */}
           <Outlet />{" "}
         </div>
       </main>

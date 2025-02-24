@@ -12,6 +12,6 @@ const RedirectIfAuthenticated = ({ isAuthenticated, redirectPath = "/" }) => {
 export default RedirectIfAuthenticated
 
 RedirectIfAuthenticated.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool,
   redirectPath: PropTypes.string,
 }

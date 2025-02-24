@@ -22,8 +22,9 @@ import { useNavigate } from "react-router-dom"
 import { redirect } from "react-router-dom"
 import axios from "axios"
 import { toast } from "react-toastify"
+import AuthContext from "../context/AuthContext.jsx"
 import { backend_URL } from "@/utils/constant"
-import { AuthContext } from "@/context/AuthContext"
+// import { AuthContext } from "@/context/AuthContext"
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
@@ -37,7 +38,8 @@ export default function AuthPage() {
   const [password, setPassword] = useState("")
   const [otp, setOtp] = useState("")
   const navigate = useNavigate()
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext)
+  const { login } = useContext(AuthContext)
+  // const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext)
   const handleForgotPassword = (e) => {
     e.preventDefault()
     // Handle sending OTP
@@ -76,20 +78,12 @@ export default function AuthPage() {
     e.preventDefault()
     if (isLogin) {
       try {
-        const response = await axios.post(
-          `${backend_URL}/user/login`,
-          {
-            email,
-            password,
-          },
-          { withCredentials: true }
-        )
-        if (response.status === 200) {
-          setEmail("")
-          setPassword("")
-          setIsAuthenticated(true)
-          toast.success("Login successful")
-        }
+        await login({
+          email,
+          password,
+        })
+        toast.success("Login successful")
+        navigate("/")
       } catch (error) {
         console.error("Error logging in:", error.response?.data)
         toast.error("Invalid Login credentials..", error.message)
@@ -98,7 +92,7 @@ export default function AuthPage() {
       console.log(password)
       try {
         const response = await axios.post(
-          "https://hackfusion-2025.onrender.com/user/register",
+          `${backend_URL}/user/register`,
           {
             name: name + " " + lastName,
             email,
