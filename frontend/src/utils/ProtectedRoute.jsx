@@ -5,7 +5,6 @@ const ProtectedRoute = ({ isAuthenticated, redirectPath = "/auth" }) => {
   if (!isAuthenticated) {
     return <Navigate to={redirectPath} replace />
   }
-
   return <DashBoard />
 }
 

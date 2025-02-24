@@ -37,8 +37,8 @@ app.use("/election", electionRouter)
 app.use("/facilityBooking", facilityBookingRouter)
 app.use("/healthAndLeaveNotify", healthAndLeaveNotifyRouter)
 app.use("/integrityAndCheatingRecord", integrityAndCheatingRecordRouter)
-app.use("/test", testRouter)
 app.use('/election', electionRoutes);
 app.use("/user", userRouter)
+app.use("/test", testRouter)
 
 export {app}

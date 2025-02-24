@@ -1,36 +1,41 @@
-import AuthPage from "./pages/Authentication.page.jsx"
 import HomePage from "./pages/Home.jsx"
 import ElectionPage from "./pages/Elections.jsx"
-// import Complaint from './components/complaintShowcase.jsx';
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import Dashboard from "./pages/DashBoard.page.jsx"
 import ComplaintList from "./pages/Complaint.page.jsx"
-import HealthAndLeaveNotify from "./pages/Health&Leave.page.jsx";
-import ApplicationApprovalSystem from "./pages/ApplicationApprovalSystem.jsx";
-import CheatingRecords from "./pages/CheatingRecords.jsx";
-import BudgetAndSponsorshipTracking from "./pages/BudgetSponsorshipTracking.jsx";
-const router = createBrowserRouter([
-  {
-    path: "/dashboard",
-    element: <Dashboard />, // Use the Layout component here
-    children: [
-      // { index: true, element: <AuthPage /> }, // Index route for /
-      { path: "", element: <HomePage /> },
-      { path: "elections", element: <ElectionPage /> },
-      { path: "complaints", element: <ComplaintList /> },
-      { path: "healthAndLeaveNotify", element: <HealthAndLeaveNotify /> },
-      { path: "applicationApproval", element: <ApplicationApprovalSystem /> },
-      { path: "cheatingRecords", element: <CheatingRecords /> },
-      { path: "budgetSponsorshipTracking", element: <BudgetAndSponsorshipTracking /> },
-    ],
-  },
-  {
-    path: "/", // If you still want a separate auth route
-    element: <AuthPage />,
-  },
-])
-
+import HealthAndLeaveNotify from "./pages/Health&Leave.page.jsx"
+import ApplicationApprovalSystem from "./pages/ApplicationApprovalSystem.jsx"
+import CheatingRecords from "./pages/CheatingRecords.jsx"
+import BudgetSponsorshipTracking from "./pages/BudgetSponsorshipTracking.jsx"
+import ProtectedRoute from "./utils/ProtectedRoute"
+import RedirectIfAuthenticated from "./utils/RedirectIfAuthenticated.jsx"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { useContext } from "react"
+import {  AuthContext } from './context/AuthContext.jsx'; // Import context
 function App() {
+  const { isAuthenticated } = useContext(AuthContext);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <ProtectedRoute isAuthenticated={isAuthenticated} />,
+      children: [
+        { path: "", element: <HomePage /> },
+        { path: "elections", element: <ElectionPage /> },
+        { path: "complaints", element: <ComplaintList /> },
+        { path: "healthAndLeaveNotify", element: <HealthAndLeaveNotify /> },
+        { path: "applicationApproval", element: <ApplicationApprovalSystem /> },
+        { path: "bookingfacility", element: <CheatingRecords /> },
+        { path: "cheatingRecords", element: <CheatingRecords /> },
+        {
+          path: "budgetSponsorshipTracking",
+          element: <BudgetSponsorshipTracking />,
+        },
+      ],
+    },
+    {
+      path: "/auth",
+      element: <RedirectIfAuthenticated isAuthenticated={isAuthenticated} />,
+    },
+  ])
+
   return <RouterProvider router={router} />
 }
 

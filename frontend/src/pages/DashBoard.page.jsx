@@ -9,56 +9,53 @@ import ProfileNav from "@/components/ProfileNav"
 import { useState } from "react"
 import {
   Bell,
-  Moon,
   Menu,
   X,
   Home,
   Users,
-  FileText,
   CreditCard,
   MessageSquare,
   Video,
   Settings,
   HelpCircle,
 } from "lucide-react"
-import AuthPage from "./Authentication.page"
-import { toast } from "react-toastify"
-import { Avatar } from "@/components/ui/avatar"
 
 const defaultProfile = {
   name: "Eugene An",
   role: "Prompt Engineer",
-  avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
+  avatar:
+    "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
   subscription: "Free Trial",
-} 
+}
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navLinks = [
-    { title: "Book Facilities", icon: Home, path: "/dashboard" },
+    { title: "Home", icon: Home, path: "/" },
+    { title: "Book Facilities", icon: Home, path: "/bookingfacility" },
     {
       title: "Notify Parents",
       icon: CreditCard,
-      path: "/dashboard/healthAndLeaveNotify",
+      path: "/healthAndLeaveNotify",
     },
-    { title: "Election", icon: Users, path: "/dashboard/elections" },
+    { title: "Election", icon: Users, path: "/elections" },
     {
       title: "Academic Integrity",
       icon: Users,
-      path: "/dashboard/CheatingRecords",
+      path: "/CheatingRecords",
     },
-    { title: "Complaints", icon: MessageSquare, path: "/dashboard/complaints" },
+    { title: "Complaints", icon: MessageSquare, path: "/complaints" },
     {
       title: "Applications & Approvals",
       icon: Video,
-      path: "/dashboard/applicationapproval",
+      path: "/applicationapproval",
     },
     {
       title: "Budget & Sponsorships",
       icon: Settings,
-      path: "/dashboard/budgetSponsorshipTracking",
+      path: "/budgetSponsorshipTracking",
     },
-    { title: "Help", icon: HelpCircle, path: "/dashboard/help" },
+    { title: "Help", icon: HelpCircle, path: "/help" },
   ]
 
   return (
@@ -98,7 +95,7 @@ export default function Layout({ children }) {
                 sideOffset={8}
                 className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
               >
-                <ProfileNav  userProfile = {defaultProfile}/>
+                <ProfileNav userProfile={defaultProfile} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

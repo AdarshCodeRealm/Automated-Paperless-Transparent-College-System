@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,9 +19,11 @@ import {
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
 import { useNavigate } from "react-router-dom"
-
+import { redirect } from "react-router-dom"
 import axios from "axios"
 import { toast } from "react-toastify"
+import { backend_URL } from "@/utils/constant"
+import { AuthContext } from "@/context/AuthContext"
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
@@ -33,8 +35,9 @@ export default function AuthPage() {
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [otp, setOtp] = useState("") // State for OTP input
+  const [otp, setOtp] = useState("")
   const navigate = useNavigate()
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext)
   const handleForgotPassword = (e) => {
     e.preventDefault()
     // Handle sending OTP
@@ -71,40 +74,27 @@ export default function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (isLogin) {
-      console.log("Login logic")
-      console.log(email, password)
-
       try {
         const response = await axios.post(
-          "http://localhost:5000/user/login",
+          `${backend_URL}/user/login`,
           {
             email,
-            password, 
+            password,
           },
           { withCredentials: true }
         )
-        setEmail("")
-        setPassword("")
-        toast.success(`Logged in successfully, Email: ${email}`)
-        const accessToken = response.data.accessToken
-        const refreshToken = response.data.refreshToken
-
-        localStorage.setItem("accessToken", accessToken)
-        localStorage.setItem("refreshToken", refreshToken)
-        localStorage.setItem("email", email)
-        localStorage.setItem("name", response.data.user.name)  
-        localStorage.setItem("id", response.data.user._id)
-        navigate("/dashboard")
-
-        console.log("Logged in successfully:", response.data)
+        if (response.status === 200) {
+          setEmail("")
+          setPassword("")
+          setIsAuthenticated(true)
+          toast.success("Login successful")
+        }
       } catch (error) {
         console.error("Error logging in:", error.response?.data)
         toast.error("Invalid Login credentials..", error.message)
       }
     } else {
-      // Registration logic
       console.log(password)
       try {
         const response = await axios.post(
@@ -119,7 +109,6 @@ export default function AuthPage() {
         setOtpSent(true)
         setName("")
         setLastName("")
-
         setPassword("")
         setAvatar(null)
         toast.success(`User Registered successfully, Email: ${email}`)

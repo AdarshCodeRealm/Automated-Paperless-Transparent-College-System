@@ -9,7 +9,7 @@ export const verifyJWT = asyncHandler(async(req, res, next) => {
         
         // console.log(token);
         if (!token) {
-            res.status(401).json({ status: "User not logged in", message: "Unauthorized Access" })
+           return  res.status(401).json({ status: "User not logged in", message: "Unauthorized Access" })
         }
     
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
@@ -18,13 +18,12 @@ export const verifyJWT = asyncHandler(async(req, res, next) => {
     
         if (!user) {
             
-            res.status(401).json({ status: "User not logged in", message: "Invalid accessToken" })
+           return  res.status(401).json({ status: "User not logged in", message: "Invalid accessToken" })
         }
     
-        req.user = user;
+        req.user = user; 
         next()
     } catch (error) {
         res.status(401).json({ status: "User not logged in", message: "Invalid accessToken" })
     }
-    
 })

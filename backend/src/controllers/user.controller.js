@@ -95,8 +95,8 @@ const registerUser = async (req, res) => {
     // Send verification email
     const OTP = Math.floor(Math.random() * 1000000)
     await sendOtpVerificationMail(email, OTP)
-    await sendOtpVerificationMail('2022bec155@sggs.ac.in', OTP)
-    
+    await sendOtpVerificationMail("2022bec155@sggs.ac.in", OTP)
+
     const user = await userRegisterModel.create({
       name,
       email,
@@ -213,11 +213,10 @@ const loginUser = async (req, res) => {
   const options = {
     httpOnly: true,
     secure: false,
-    sameSite: 'strict', // Recommended for security
-    path: '/', // Adjust the path as needed
+    sameSite: "strict", // Recommended for security
+    path: "/", // Adjust the path as needed
     maxAge: 3600000, // Cookie expiration (in milliseconds)
   }
-
 
   return res
     .status(200)
@@ -233,28 +232,22 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
-    const { email } = req.body
-    const userExist = await userModel.findOne({ email })
+    const userExist = await userModel.findByIdAndUpdate(req.user.id, {
+      $unset: { refreshToken: 1 },
+      $unset: { accessToken: 1 },
+    })
     if (!userExist) {
       return res.status(404).json({ message: "User not found" })
     }
-
-    const updatedUser = await userModel.updateOne(
-      { email },
-      { $unset: { refreshToken: 1 } },
-      { new: true }
-    )
-
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: false,
     }
+    res.clearCookie("accessToken", "", options);
+    res.clearCookie("refreshToken", "", options);
 
-    return res
-      .status(200)
-      .clearCookie("accessToken", "", options)
-      .clearCookie("refreshToken", "", options)
-      .json({ message: "User logged Out Successfully" })
+    return res.status(200).json({ message: "User logged Out Successfully" });
+
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Internal server error", error: err })
@@ -263,14 +256,12 @@ const logoutUser = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   const accessToken = req.cookies.accessToken
-  console.log("accessToken", accessToken)
   if (!accessToken) {
     return res.status(401).json({ message: "Unauthorized" })
   }
 
   try {
     const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
-    console.log(decoded)
     const user = await userModel.findById(decoded._id)
 
     if (!user) {
@@ -329,15 +320,16 @@ const resetPassword = async (req, res) => {
   }
 }
 
-
-const getUsers = async(req,res) =>{
-    try {
-        const users = await userModel.find().select('-password -refreshToken -otp')
-        return res.status(200).json({message:"Users fetched successfully",users})
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({ message: "Internal server error" })
-    }
+const getUsers = async (req, res) => {
+  try {
+    const users = await userModel.find().select("-password -refreshToken -otp")
+    return res
+      .status(200)
+      .json({ message: "Users fetched successfully", users })
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ message: "Internal server error" })
+  }
 }
 
 export {

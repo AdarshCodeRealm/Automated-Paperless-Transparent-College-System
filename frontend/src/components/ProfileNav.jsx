@@ -9,18 +9,27 @@ import { Link } from "react-router-dom"
 import PropTypes from "prop-types"
 import { backend_URL } from "@/utils/constant"
 import { toast } from "react-toastify"
-
+import axios from "axios"
+import { AuthContext } from "@/context/AuthContext"
+import { useContext } from "react"
 export default function Profile01({ userProfile }) {
+  const { setIsAuthenticated,user } = useContext(AuthContext)
+
   const logOut = async () => {
-    toast.success("Logged out successfully")
     try {
-      await fetch(`${backend_URL}/logout`, {
-        method: "POST",
-        credentials: "include",
-      })
-      window.location.href = "/"
+      const res = await axios.post(`${backend_URL}/user/logout`,{},{withCredentials: true })
+     
+      if (res.status === 200) {
+        toast.success("Logged out successfully")
+        setIsAuthenticated(false)
+        console.log("res", res)
+      } else {
+        toast.error("Logout failed") 
+        console.error("Logout failed:", res.data) 
+      }
     } catch (error) {
-      console.log(error)
+      console.error("Logout error:", error)
+      toast.error("Logout error") 
     }
   }
 
@@ -52,7 +61,7 @@ export default function Profile01({ userProfile }) {
           <div className="flex items-center gap-4 mb-8">
             <div className="relative shrink-0">
               <img
-                src={userProfile.avatar}
+                src={user.avatar || "https://i.pravatar.cc/72"}
                 alt={name}
                 width={72}
                 height={72}
@@ -64,10 +73,13 @@ export default function Profile01({ userProfile }) {
             {/* Profile Info */}
             <div className="flex-1">
               <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-                {userProfile.name}
+                {user.name}
               </h2>
+              <p className="text-zinc-600 text-[12px] dark:text-zinc-400">
+                {user.department}
+              </p>
               <p className="text-zinc-600 dark:text-zinc-400">
-                {userProfile.role}
+                {user.role}
               </p>
             </div>
           </div>
