@@ -16,10 +16,7 @@ function ComplaintShowcase({ complaint }) {
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
-useEffect(() => {
-  console.log(complaint?.voteCount);
-})
- 
+
 
   function formatSocialMediaDate(dateString) {
     const date = new Date(dateString);

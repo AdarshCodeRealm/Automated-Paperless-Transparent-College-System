@@ -1,17 +1,20 @@
-import { Navigate } from "react-router-dom"
-import PropTypes from "prop-types"
-import DashBoard from "../pages/DashBoard.page.jsx"
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-const ProtectedRoute = ({ isAuthenticated }) => {
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />
+const ProtectedRoute = () => {
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
+  const location = useLocation();
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a loading spinner
   }
-  return <DashBoard />
-}
 
-export default ProtectedRoute
+  if (isAuthenticated === true) {
+    return <Outlet />;
+  }
 
-ProtectedRoute.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
-  redirectPath: PropTypes.string,
-}
+  return <Navigate to="/login" state={{ from: location }} replace />;
+};
+
+export default ProtectedRoute;

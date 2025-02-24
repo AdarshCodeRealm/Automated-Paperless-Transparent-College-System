@@ -1,17 +1,20 @@
-import { Navigate } from "react-router-dom"
-import PropTypes from "prop-types"
-import Auth from "../pages/Authentication.page.jsx"
-const RedirectIfAuthenticated = ({ isAuthenticated, redirectPath = "/" }) => {
-  if (isAuthenticated) {
-    return <Navigate to={redirectPath} replace />
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Navigate, useLocation } from "react-router-dom";
+
+const RedirectIfAuthenticated = ({ children }) => {
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
+  const location = useLocation();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  return <Auth />
-}
+  if (isAuthenticated === false) {
+    return children;
+  }
 
-export default RedirectIfAuthenticated
+  return <Navigate to="/" state={{ from: location }} replace />;
+};
 
-RedirectIfAuthenticated.propTypes = {
-  isAuthenticated: PropTypes.bool,
-  redirectPath: PropTypes.string,
-}
+export default RedirectIfAuthenticated;

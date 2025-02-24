@@ -24,6 +24,7 @@ import {
 import { Label } from "../components/ui/label"
 import { Textarea } from "../components/ui/textarea"
 import { toast } from "react-toastify"
+import { backend_URL } from "@/utils/constant"
 
 function ComplaintList() {
   const [title, setTitle] = useState("")
@@ -42,7 +43,7 @@ function ComplaintList() {
     setLoading(true) // Set loading to true before fetching
     try {
       const response = await axios.get(
-        "https://hackfusion-2025.onrender.com/complaint"
+        `${backend_URL}/complaint`
       )
       if (
         response.data &&
@@ -50,7 +51,6 @@ function ComplaintList() {
         Array.isArray(response.data.complaints)
       ) {
         setData(response.data.complaints) // Corrected data access
-        console.log(response.data.complaints)
       } else {
         console.error("API response is invalid:", response.data)
         setData([])
@@ -75,7 +75,7 @@ function ComplaintList() {
       const id = localStorage.getItem("id")
       axios
         .post(
-          "https://hackfusion-2025.onrender.com/complaint/createComplaint",
+          `${backend_URL}/complaint/createComplaint`,
           {
             title,
             description,

@@ -37,6 +37,7 @@ import {
 import { toast } from "react-toastify"
 import { useState, useRef } from "react"
 import axios from "axios"
+import { backend_URL } from "@/utils/constant"
 export default function AdminPage() {
   const fileInputRef = useRef(null)
   useEffect(() => {
@@ -54,7 +55,7 @@ export default function AdminPage() {
         formData.append(key, newViolation[key])
       }
       await axios.post(
-        "https://hackfusion-2025.onrender.com/integrityAndCheatingRecord",
+        `${backend_URL}/integrityAndCheatingRecord`,
         formData,
         {
           headers: {
@@ -97,7 +98,7 @@ export default function AdminPage() {
     ) {
       try {
         await axios.delete(
-          `https://hackfusion-2025.onrender.com/integrityAndCheatingRecord/${id}`
+          `${backend_URL}/integrityAndCheatingRecord/${id}`
         ) // Adjust the API endpoint as needed
         toast.success("Record deleted successfully!")
         fetchViolations()
@@ -110,10 +111,9 @@ export default function AdminPage() {
   const fetchViolations = async () => {
     try {
       const response = await axios.get(
-        "https://hackfusion-2025.onrender.com/integrityAndCheatingRecord"
+        `${backend_URL}/integrityAndCheatingRecord`
       ) // Adjust the API endpoint as needed
       if (response.status === 200) {
-        console.log(response.data)
         setRecords(response.data)
       }
     } catch (error) {
