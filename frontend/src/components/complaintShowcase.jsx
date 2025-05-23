@@ -1,6 +1,6 @@
 // complaintShowcase.jsx
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ArrowBigUp,
   ArrowBigDown,
@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function ComplaintShowcase({ complaint }) {
+function ComplaintShowcase({ complaint, onLocalUpvote }) {
   const [votes, setVotes] = useState(complaint.voteCount || 0); // Initialize with voteCount or 0
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -48,11 +48,18 @@ function ComplaintShowcase({ complaint }) {
     }
   }
 
-  const handleDelete = () => {
-  };
+  
 
 
   const handleUpvote = async () => {
+    // If onLocalUpvote is provided, use it for local data
+    if (onLocalUpvote) {
+      onLocalUpvote();
+      setVotes(votes + 1);
+      return;
+    }
+    
+    // Otherwise proceed with API call for backend data
     try {
       const id = localStorage.getItem("id");
       
@@ -193,6 +200,7 @@ ComplaintShowcase.propTypes = {
     upvote: PropTypes.arrayOf(PropTypes.string),  // Changed from upVote to upvote
     comments: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
+  onLocalUpvote: PropTypes.func,
 };
 
 export default ComplaintShowcase;

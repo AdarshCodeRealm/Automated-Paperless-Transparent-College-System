@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import PropTypes from "prop-types"
 import { Bell, Filter, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -130,6 +131,32 @@ function ApplicationDetail({ application }) {
   )
 }
 
+ApplicationDetail.propTypes = {
+  application: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    priority: PropTypes.string.isRequired,
+    submittedBy: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired
+    }).isRequired,
+    submittedAt: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    amount: PropTypes.number,
+    approvalStages: PropTypes.arrayOf(
+      PropTypes.shape({
+        role: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
+        timestamp: PropTypes.string
+      })
+    ).isRequired
+  }).isRequired
+};
+
 function ApplicationCard({ application }) {
   const totalStages = application.type === "event" ? 3 : 4
   const approvedStages = application.approvalStages.filter((stage) => stage.status === "approved").length
@@ -180,6 +207,32 @@ function ApplicationCard({ application }) {
     </Dialog>
   )
 }
+
+ApplicationCard.propTypes = {
+  application: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    priority: PropTypes.string.isRequired,
+    submittedBy: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired
+    }).isRequired,
+    submittedAt: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    amount: PropTypes.number,
+    approvalStages: PropTypes.arrayOf(
+      PropTypes.shape({
+        role: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
+        timestamp: PropTypes.string
+      })
+    ).isRequired
+  }).isRequired
+};
 
 function NewApplicationForm() {
   const [applicationType, setApplicationType] = useState("")
@@ -232,6 +285,10 @@ function NewApplicationForm() {
     </div>
   )
 }
+
+NewApplicationForm.propTypes = {
+  // This component doesn't receive any props directly
+};
 
 const sampleApplications = [
   {
@@ -487,4 +544,8 @@ export default function ApplicationPortal() {
     </div>
   )
 }
+
+ApplicationPortal.propTypes = {
+  // This component doesn't receive any props directly
+};
 

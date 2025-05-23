@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import PropTypes from "prop-types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -443,3 +444,12 @@ function Progress({ value, className }) {
     </div>
   )
 }
+
+Progress.propTypes = {
+  value: PropTypes.number.isRequired,
+  className: PropTypes.string
+};
+
+BudgetTracking.propTypes = {
+  // This component doesn't receive any props directly
+};

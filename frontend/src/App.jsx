@@ -15,7 +15,6 @@ function App() {
     <Routes>
       <Route path="/" element={<ProtectedRoute />}>
         <Route element={<DashBoard/>} >
-
         <Route index element={<Home />} />
         <Route path="elections" element={<ElectionPage />} />
         <Route path="healthAndLeaveNotify" element={<HealthAndLeaveNotify />} />

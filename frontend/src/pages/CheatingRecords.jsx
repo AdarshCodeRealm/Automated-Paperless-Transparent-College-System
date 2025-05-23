@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { useEffect } from "react"
+import PropTypes from "prop-types"
 import {
   Dialog,
   DialogContent,
@@ -599,9 +600,14 @@ export default function AdminPage() {
                   </TableCell>
                 </TableRow>
               ))}
+
           </TableBody>
         </Table>
       </div>
     </div>
   )
+}
+
+AdminPage.propTypes = {
+  // This component doesn't receive any props directly
 }

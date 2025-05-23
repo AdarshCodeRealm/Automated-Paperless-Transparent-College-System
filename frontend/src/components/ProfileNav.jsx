@@ -6,13 +6,11 @@ import {
   FileText,
 } from "lucide-react"
 import { Link } from "react-router-dom"
-import PropTypes from "prop-types"
-import AuthContext from "@/context/AuthContext"
-// import { AuthContext } from "@/context/AuthContext"
 import { useContext } from "react"
+import AuthContext from "@/context/AuthContext"
+
 export default function Profile01() {
-  // const { setIsAuthenticated,user } = useContext(AuthContext)
-  const { logout,user} = useContext(AuthContext)
+  const { logout, user } = useContext(AuthContext)
 
   const menuItems = [
     {
@@ -109,8 +107,4 @@ export default function Profile01() {
       </div>
     </div>
   )
-}
-
-Profile01.propTypes = {
-  userProfile: PropTypes.object.isRequired,
 }

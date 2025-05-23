@@ -627,6 +627,10 @@ function DashboardOverview() {
   )
 }
 
+DashboardOverview.propTypes = {
+  // This component doesn't receive any props
+};
+
 export default function DashBoard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
@@ -738,3 +742,7 @@ export default function DashBoard() {
     </div>
   )
 }
+
+DashBoard.propTypes = {
+  // This component doesn't receive any props directly
+};

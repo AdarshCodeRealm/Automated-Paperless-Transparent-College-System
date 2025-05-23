@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import PropTypes from "prop-types";
 
 export function ApplicationDetail({ application }) {
   const totalStages = application.type === "event" ? 3 : 4;
@@ -113,3 +114,28 @@ export function ApplicationDetail({ application }) {
     </div>
   );
 }
+
+ApplicationDetail.propTypes = {
+  application: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(["event", "budget"]).isRequired,
+    priority: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    submittedAt: PropTypes.string.isRequired,
+    amount: PropTypes.number,
+    submittedBy: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+    }).isRequired,
+    approvalStages: PropTypes.arrayOf(
+      PropTypes.shape({
+        role: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        status: PropTypes.oneOf(["approved", "rejected", "pending"]).isRequired,
+        timestamp: PropTypes.string,
+      })
+    ).isRequired,
+  }).isRequired,
+};
