@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import  { createContext, useState, useEffect, useCallback } from "react";
 import { backend_URL } from "@/utils/constant";
 import axios from "axios";
+import PropTypes from 'prop-types';
 
 export const AuthContext = createContext();
 
@@ -139,6 +140,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired
 };
 
 export default AuthContext;
