@@ -123,10 +123,65 @@ CLOUDINARY_API_SECRET=your_cloudinary_secret
 
 The API documentation is available at `/api-docs` when running the backend server.
 
+### Authentication
+- `POST /user/register` - Register a new user
+- `POST /user/login` - Login user
+- `POST /user/logout` - Logout user
+- `GET /user/isProtected` - Check if user is authenticated
+- `GET /user/forgetPassword` - Request password reset
+- `PATCH /user/resetPassword` - Reset password
+
+### Complaints
+- `POST /complaint/createComplaint` - Create a new complaint
+- `GET /complaint` - Get all complaints
+- `PATCH /complaint/toggleUpvote/:complaintId/:userId` - Upvote a complaint
+- `PATCH /complaint/toggleDownvote/:complaintId` - Downvote a complaint
+- `DELETE /complaint/:id` - Delete a complaint
+- `POST /complaint/comment/:id` - Add comment to a complaint
+- `DELETE /complaint/comment/:id` - Delete a comment
+
+### Budget & Sponsorship Tracking
+- `POST /budgetAndSponsorshipTracking/budgets` - Create new budget
+- `GET /budgetAndSponsorshipTracking/budgets` - Get all budgets
+- `GET /budgetAndSponsorshipTracking/budgets/:id` - Get budget by ID
+- `PUT /budgetAndSponsorshipTracking/budgets/:id` - Update budget
+- `DELETE /budgetAndSponsorshipTracking/budgets/:id` - Delete budget
+- `POST /budgetAndSponsorshipTracking/expense` - Create new expense
+- `GET /budgetAndSponsorshipTracking/expense` - Get all expenses
+- `POST /budgetAndSponsorshipTracking/sponsorship` - Create new sponsorship
+- `GET /budgetAndSponsorshipTracking/sponsorship` - Get all sponsorships
+
+### Election
+- `POST /election/register` - Register election user
+- `POST /election/login` - Login election user
+- `POST /election/registercandidate` - Register a candidate
+- `GET /election/candidates` - Get all candidates
+- `POST /election/vote` - Cast a vote
+- `GET /election/results` - Get live election results
+
+### Health & Leave Notification
+- `GET /healthAndLeaveNotify/students` - Get all students
+- `POST /healthAndLeaveNotify/student/add` - Add new student
+- `POST /healthAndLeaveNotify/health-records` - Create health record
+- `POST /healthAndLeaveNotify/leave-records` - Create leave record
+- `POST /healthAndLeaveNotify/report-sick` - Report student as sick
+- `POST /healthAndLeaveNotify/student-leaves` - Report student leaving campus
+
+### Facility Booking
+- `POST /facilityBooking/bookings` - Create a new booking
+- `GET /facilityBooking/bookings` - Get all bookings
+- `PUT /facilityBooking/bookings/:id/approve` - Approve a booking
+- `PUT /facilityBooking/bookings/:id/reject` - Reject a booking
+- `GET /facilityBooking/facilities` - Get all facilities
+
+### Academic Integrity
+- `POST /integrityAndCheatingRecord` - Create violation record
+- `GET /integrityAndCheatingRecord` - Get all violations
+- `DELETE /integrityAndCheatingRecord/:id` - Delete a violation record
+
 ## Authors
 
 - [@AdarshCodeRealm](https://github.com/AdarshCodeRealm/)
-- [@Shruti-ops](https://github.com/Shruti-ops/)
 - [@VivekShahare04](https://github.com/VivekShahare04)
 - [@AsthaDhapodkar](https://github.com/AsthaDhapodkar)
 
