@@ -2,7 +2,7 @@ import ComplaintShowcase from "../components/complaintShowcase"
 import { useState, useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Database } from "lucide-react"
 import axios from "axios"
 import {
   Select,
@@ -34,7 +34,8 @@ function ComplaintList() {
   const [filter, setFilter] = useState("latest")
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true) // Add loading state
-  const [complaintPopup,setComplaintPopup] = useState(false)
+  const [complaintPopup, setComplaintPopup] = useState(false)
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -42,15 +43,27 @@ function ComplaintList() {
   const fetchData = async () => {
     setLoading(true) // Set loading to true before fetching
     try {
-      const response = await axios.get(
-        `${backend_URL}/complaint`
-      )
+      const response = await axios.get(`${backend_URL}/complaint`)
+
+      console.log("API Response:", response.data) // Debug logging
+
       if (
         response.data &&
         response.data.complaints &&
         Array.isArray(response.data.complaints)
       ) {
-        setData(response.data.complaints) // Corrected data access
+        const complaints = response.data.complaints
+
+        // Sort complaints based on filter
+        if (filter === "latest") {
+          complaints.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        } else if (filter === "top-voted") {
+          complaints.sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0))
+        }
+
+        setData(complaints)
       } else {
         console.error("API response is invalid:", response.data)
         setData([])
@@ -102,26 +115,85 @@ function ComplaintList() {
   }
 
   const toggleFilter = () => {
-    setFilter(filter === "latest" ? "top-voted" : "latest")
+    const newFilter = filter === "latest" ? "top-voted" : "latest"
+    setFilter(newFilter)
+
+    // Re-sort the existing data without making a new API call
+    const sortedData = [...data]
+    if (newFilter === "latest") {
+      sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    } else {
+      sortedData.sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0))
+    }
+    setData(sortedData)
+  }
+
+  const addHardCodedComplaints = async () => {
+    try {
+      setLoading(true)
+      const response = await axios.post(
+        `${backend_URL}/complaint/seed-data`,
+        { clearExisting: false }
+      )
+
+      if (response.data && response.data.status === "success") {
+        toast.success(response.data.message)
+        fetchData() // Refresh the complaints list
+      } else {
+        toast.error("Failed to add sample complaints")
+      }
+    } catch (error) {
+      console.error("Error adding sample complaints:", error)
+      toast.error(
+        error.response?.data?.message || "Failed to add sample complaints"
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div>
+    <div className="p-4">
       {loading ? (
-        <p>Loading complaints...</p>
+        <div className="flex justify-center items-center h-40">
+          <p className="text-lg">Loading complaints...</p>
+        </div>
       ) : data.length > 0 ? (
-        data.map((complaint) => (
-          <ComplaintShowcase key={complaint.title} complaint={complaint} />
-        ))
+        <div className="space-y-4">
+          {data.map((complaint) => (
+            <ComplaintShowcase key={complaint._id} complaint={complaint} />
+          ))}
+        </div>
       ) : (
-        <p>No complaints found.</p>
+        <div className="flex justify-center items-center h-40">
+          <p className="text-lg">
+            No complaints found. Click "Add Sample Complaints" to generate some
+            example data.
+          </p>
+        </div>
       )}
 
-      <Button onClick={() => setComplaintPopup(true)} className="fixed bottom-4 right-4 shadow-lg" size="lg">
-        <AlertCircle className="mr-2 h-4 w-4" />
-        Raise Complaint
-      </Button>
-      <Dialog open={complaintPopup}>
+      <div className="fixed bottom-4 right-4 space-y-2 flex flex-col">
+        <Button
+          onClick={() => setComplaintPopup(true)}
+          className="shadow-lg"
+          size="lg"
+        >
+          <AlertCircle className="mr-2 h-4 w-4" />
+          Raise Complaint
+        </Button>
+
+        <Button
+          onClick={addHardCodedComplaints}
+          className="shadow-lg bg-purple-600 hover:bg-purple-700"
+          size="lg"
+        >
+          <Database className="mr-2 h-4 w-4" />
+          Add Sample Complaints
+        </Button>
+      </div>
+
+      <Dialog open={complaintPopup} onOpenChange={setComplaintPopup}>
         <DialogTrigger asChild></DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -182,8 +254,9 @@ function ComplaintList() {
           </form>
         </DialogContent>
       </Dialog>
+
       <Button
-        className="fixed bottom-16  right-4 shadow-lg"
+        className="fixed bottom-40 right-4 shadow-lg"
         onClick={toggleFilter}
       >
         {filter === "latest" ? "Top Voted" : "Latest"}

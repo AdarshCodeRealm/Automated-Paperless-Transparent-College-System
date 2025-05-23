@@ -12,7 +12,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 function ComplaintShowcase({ complaint }) {
-  const [votes, setVotes] = useState([complaint.upVote]); // Initialize votes to 0
+  const [votes, setVotes] = useState(complaint.voteCount || 0); // Initialize with voteCount or 0
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
@@ -55,21 +55,25 @@ function ComplaintShowcase({ complaint }) {
   const handleUpvote = async () => {
     try {
       const id = localStorage.getItem("id");
-   
       
-      const res =await axios.patch(
+      const res = await axios.patch(
         `http://localhost:5000/complaint/toggleUpvote/${complaint._id}/${id}`
       );
-      setVotes(votes + 1);
-      console.log(res);
-      toast.success("Upvoted");
+      
+      if (res.data && res.data.complaint) {
+        // Update votes with the new vote count from the response
+        setVotes(res.data.complaint.voteCount || 0);
+        toast.success(res.data.message || "Vote updated");
+      }
     } catch (error) {
       console.error("Error upvoting:", error);
+      toast.error("Failed to update vote");
     }
   };
 
   const handleDownvote = () => {
-    setVotes((prev) => Math.max(0, prev - 1)); // Decrement votes, but not below 0
+    // This would need to be implemented with backend integration
+    // Similar to handleUpvote but using the downvote endpoint
   };
 
   const handleCommentSubmit = (e) => {
@@ -113,7 +117,7 @@ function ComplaintShowcase({ complaint }) {
               >
                 <ArrowBigUp size={20} className="hover:text-orange-500" />
               </button>
-              <span className="text-xs font-medium px-1">{votes.length}</span>
+              <span className="text-xs font-medium px-1">{votes}</span>
               <button
                 onClick={handleDownvote}
                 className="flex items-center text-[#666668] hover:bg-[#272729] p-1 rounded transition-colors"
@@ -186,7 +190,7 @@ ComplaintShowcase.propTypes = {
     title: PropTypes.string.isRequired,
     voteCount: PropTypes.number,
     description: PropTypes.string.isRequired,
-    upVote: PropTypes.arrayOf(PropTypes.string), 
+    upvote: PropTypes.arrayOf(PropTypes.string),  // Changed from upVote to upvote
     comments: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
 };

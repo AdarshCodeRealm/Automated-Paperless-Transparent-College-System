@@ -338,6 +338,136 @@ const deleteComment = async (req, res) => {
   }
 }
 
+const seedComplaintData = async (req, res) => {
+  try {
+    // Find a default user to associate complaints with
+    const defaultUser = await userProfile.findOne();
+    
+    if (!defaultUser) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "No user found to associate complaints with" 
+      });
+    }
+
+    // Sample complaint data
+    const complaints = [
+      {
+        title: "Poor Internet Connectivity in Hostel Block C",
+        description: "The internet in Block C has been extremely slow for the past week. Students are unable to attend online classes or submit assignments on time. This is affecting our academic performance.",
+        category: "Facility",
+        status: "Open",
+        raisedBy: defaultUser._id,
+        voteCount: 7
+      },
+      {
+        title: "Cafeteria Food Quality Issues",
+        description: "The food quality in the main cafeteria has declined significantly over the past month. Several students have reported stomach issues after eating there. We request an urgent inspection and improvement.",
+        category: "Student Life",
+        status: "In Progress",
+        raisedBy: defaultUser._id,
+        voteCount: 11
+      },
+      {
+        title: "Library Noise Level During Exam Week",
+        description: "Despite being a quiet zone, the library has been extremely noisy during exam week. The staff is not enforcing the rules, and it's impossible to concentrate on studies. Please address this issue.",
+        category: "Academic",
+        status: "Resolved",
+        raisedBy: defaultUser._id,
+        voteCount: 15
+      },
+      {
+        title: "Broken Air Conditioning in CS Department",
+        description: "The air conditioning in the Computer Science department has been malfunctioning for two weeks now. The labs are uncomfortably hot, making it difficult to concentrate during practical sessions.",
+        category: "Facility",
+        status: "In Progress",
+        raisedBy: defaultUser._id,
+        voteCount: 9
+      },
+      {
+        title: "Parking Space Shortage for Students",
+        description: "There is a severe shortage of parking spaces for students who commute. Many are forced to park far away or in unauthorized areas, resulting in fines. We need more designated student parking areas.",
+        category: "Infrastructure",
+        status: "Open",
+        raisedBy: defaultUser._id,
+        voteCount: 23
+      },
+      {
+        title: "Outdated Laboratory Equipment in Physics Lab",
+        description: "The equipment in the Physics laboratory is outdated and often malfunctions during experiments. This is affecting our practical learning and grades. Please consider upgrading the equipment.",
+        category: "Academic",
+        status: "Open",
+        raisedBy: defaultUser._id,
+        voteCount: 8
+      },
+      {
+        title: "Safety Concerns in Chemistry Labs",
+        description: "There are inadequate safety measures in the Chemistry labs. Several safety equipment pieces are missing or not functional. This poses a serious risk to students during experiments.",
+        category: "Facility",
+        status: "Open",
+        raisedBy: defaultUser._id,
+        voteCount: 18
+      },
+      {
+        title: "Limited Study Spaces During Exam Period",
+        description: "During exam periods, there are not enough quiet study spaces available on campus. The library and study halls are always full, forcing students to study in noisy environments like cafeterias.",
+        category: "Academic",
+        status: "In Progress",
+        raisedBy: defaultUser._id,
+        voteCount: 14
+      },
+      {
+        title: "Poor Lighting in Campus Walkways",
+        description: "The lighting along campus walkways is insufficient, especially near the dormitories. This creates safety concerns for students walking back to their rooms after evening classes.",
+        category: "Infrastructure",
+        status: "Open",
+        raisedBy: defaultUser._id,
+        voteCount: 12
+      },
+      {
+        title: "Inconsistent Water Supply in Hostels",
+        description: "The water supply in the hostels is inconsistent, with frequent disruptions. Students are often left without water for basic needs like showering and washing. This is affecting our daily routine.",
+        category: "Facility",
+        status: "Resolved",
+        raisedBy: defaultUser._id,
+        voteCount: 16
+      }
+    ];
+
+    // Clear existing complaints if requested
+    if (req.body.clearExisting) {
+      await Complaint.deleteMany({});
+    }
+
+    // Insert the sample complaints
+    const result = await Complaint.insertMany(complaints);
+    
+    // Update each complaint to have proper upvote arrays based on voteCount
+    for (const complaint of result) {
+      // Create an array of user IDs for upvotes based on voteCount
+      const upvotes = Array(complaint.voteCount).fill(defaultUser._id);
+      
+      // Update the complaint with the upvote array
+      await Complaint.findByIdAndUpdate(complaint._id, {
+        upvote: upvotes
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: `${result.length} sample complaints have been added successfully`,
+      data: result
+    });
+  } catch (error) {
+    console.error("Error seeding complaint data:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to seed complaint data",
+      error: error.message
+    });
+  }
+};
+
 export {
   createComplaint,
   toggleUpvote,
@@ -346,4 +476,5 @@ export {
   deleteComplaint,
   deleteComment,
   createComment,
+  seedComplaintData
 }

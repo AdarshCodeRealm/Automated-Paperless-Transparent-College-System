@@ -58,32 +58,76 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select"
+
+// Mock data for election results visualization
 const mockData = [
-  { name: "John McCarthy One", votes: 75, percentage: "30%" },
-  { name: "Jane McCarthy Two", votes: 50, percentage: "20%" },
-  { name: "Sam McCarthy Three", votes: 125, percentage: "50%" },
+  { name: "Aarav Patel", position: "President", votes: 1254, percentage: "42%" },
+  { name: "Priya Singh", position: "President", votes: 982, percentage: "33%" },
+  { name: "Vikram Sharma", position: "President", votes: 745, percentage: "25%" },
+  
+  { name: "Neha Gupta", position: "Vice President", votes: 1105, percentage: "37%" },
+  { name: "Arjun Mehta", position: "Vice President", votes: 1053, percentage: "35%" },
+  { name: "Kiran Kumar", position: "Vice President", votes: 830, percentage: "28%" },
+  
+  { name: "Ravi Verma", position: "General Secretary", votes: 1486, percentage: "50%" },
+  { name: "Anjali Reddy", position: "General Secretary", votes: 1479, percentage: "50%" },
+  
+  { name: "Sanjay Desai", position: "Treasurer", votes: 1632, percentage: "55%" },
+  { name: "Meera Joshi", position: "Treasurer", votes: 1342, percentage: "45%" }
 ]
 
+// Comprehensive data for upcoming elections
 const upcomingElections = [
   {
     id: 1,
-    title: "STUDENT COUNCIL ELECTION",
-    date: "2025-03-15",
-    timeLeft: "23:15:45",
+    title: "STUDENT COUNCIL ELECTION 2025-26",
+    description: "Annual election for the main student governing body positions including President, Vice President, General Secretary, and Treasurer",
+    date: "2025-05-25",
+    startTime: "08:00 AM",
+    endTime: "06:00 PM",
+    timeLeft: "2d 23h 15m 45s",
+    eligibleVoters: 4250,
+    positions: ["President", "Vice President", "General Secretary", "Treasurer"],
+    nominationDeadline: "2025-05-15",
+    campaignPeriod: "2025-05-16 to 2025-05-24",
+    resultsAnnouncement: "2025-05-26"
   },
   {
     id: 2,
-    title: "DEPARTMENT REP ELECTION",
-    date: "2025-03-20",
-    timeLeft: "120:45:30",
+    title: "DEPARTMENT REPRESENTATIVES ELECTION",
+    description: "Election for student representatives from each academic department",
+    date: "2025-05-28",
+    startTime: "09:00 AM",
+    endTime: "05:00 PM",
+    timeLeft: "5d 21h 45m 30s",
+    eligibleVoters: 4250,
+    positions: ["CS Rep", "ME Rep", "EE Rep", "CE Rep", "CH Rep"],
+    nominationDeadline: "2025-05-20",
+    campaignPeriod: "2025-05-21 to 2025-05-27",
+    resultsAnnouncement: "2025-05-29"
   },
+  {
+    id: 3,
+    title: "HOSTEL COMMITTEE ELECTION",
+    description: "Election for hostel block representatives and committee members",
+    date: "2025-06-02",
+    startTime: "10:00 AM",
+    endTime: "08:00 PM",
+    timeLeft: "10d 12h 30m 15s",
+    eligibleVoters: 3200,
+    positions: ["Chief Warden", "Block Representatives", "Mess Secretary", "Sports Coordinator"],
+    nominationDeadline: "2025-05-25",
+    campaignPeriod: "2025-05-26 to 2025-06-01",
+    resultsAnnouncement: "2025-06-03"
+  }
 ]
 
+// Expanded candidates data
 const candidates = [
   {
     id: 1,
     name: "Sarah Johnson",
-    photo: "/placeholder.svg", // Replace with actual image path
+    photo: "https://randomuser.me/api/portraits/women/44.jpg",
     course: "B.Tech Computer Science",
     year: "3rd Year",
     regNumber: "BT20CS045",
@@ -91,24 +135,104 @@ const candidates = [
     position: "President",
     motto: "Innovate, Integrate, Inspire",
     manifesto: [
-      "Implement digital student ID system",
-      "Create 24/7 study spaces",
-      "Launch mental health awareness program",
+      "Implement digital student ID system for seamless campus access",
+      "Create 24/7 study spaces with improved Wi-Fi and facilities",
+      "Launch comprehensive mental health awareness and support program",
+      "Establish student entrepreneurship incubation center",
+      "Improve transparency in student council fund allocation"
     ],
     previousRoles: [
       "Class Representative (2nd Year)",
       "Technical Club Secretary",
+      "Student Mentor for First Year Students"
     ],
-    achievements: ["Dean's List 2023", "Best Project Award - Tech Fest 2024"],
+    achievements: [
+      "Dean's List 2023 & 2024", 
+      "Best Project Award - Tech Fest 2024",
+      "Published paper in International Conference on Computer Science"
+    ],
     socialContributions: [
-      "Founded Code for Community initiative",
-      "Student Mentorship Program Lead",
+      "Founded Code for Community initiative to build tech solutions for local NGOs",
+      "Student Mentorship Program Lead - guided 20+ freshers",
+      "Organized blood donation camp that collected 150+ units"
     ],
+    voteCount: 1254,
+    votePercentage: "42%"
   },
   {
     id: 2,
+    name: "Priya Singh",
+    photo: "https://randomuser.me/api/portraits/women/33.jpg",
+    course: "B.Tech Computer Science",
+    year: "3rd Year",
+    regNumber: "BT20CS063",
+    email: "priya.s@university.edu",
+    position: "President",
+    motto: "For Students, By Students",
+    manifesto: [
+      "Establish student grievance redressal system with 48-hour response time",
+      "Expand library resources and extend opening hours during exams",
+      "Create more recreational spaces and facilities on campus",
+      "Launch inter-college cultural and technical festival",
+      "Implement sustainable campus initiatives"
+    ],
+    previousRoles: [
+      "Cultural Committee Coordinator",
+      "NSS Volunteer",
+      "Department Representative"
+    ],
+    achievements: [
+      "University Cultural Star Award 2024",
+      "National Debate Competition Finalist",
+      "Scholarship for Academic Excellence"
+    ],
+    socialContributions: [
+      "Teach For Change - weekend education program for underprivileged children",
+      "Environmental Conservation Club founder",
+      "Organized campus-wide plastic-free initiative"
+    ],
+    voteCount: 982,
+    votePercentage: "33%"
+  },
+  {
+    id: 3,
+    name: "Vikram Sharma",
+    photo: "https://randomuser.me/api/portraits/men/76.jpg",
+    course: "B.Tech Electronics & Communication",
+    year: "4th Year",
+    regNumber: "BT19EC037",
+    email: "vikram.s@university.edu",
+    position: "President",
+    motto: "Building Tomorrow's Leaders Today",
+    manifesto: [
+      "Establish alumni mentorship network for career guidance",
+      "Improve sports facilities and organize inter-department tournaments",
+      "Create industry partnership program for internships and placements",
+      "Launch student-run campus radio station",
+      "Implement feedback system for curriculum improvement"
+    ],
+    previousRoles: [
+      "Sports Secretary",
+      "Placement Committee Member",
+      "Inter-College Event Coordinator"
+    ],
+    achievements: [
+      "University Sports Medal 2023",
+      "Best Student Leader Award",
+      "Secured sponsorships worth ₹5 lakhs for college events"
+    ],
+    socialContributions: [
+      "Sports coaching for children from economically weaker sections",
+      "Career guidance workshops in rural schools",
+      "Disaster relief volunteer during floods"
+    ],
+    voteCount: 745,
+    votePercentage: "25%"
+  },
+  {
+    id: 4,
     name: "Michael Chen",
-    photo: "/placeholder.svg", // Replace with actual image path
+    photo: "https://randomuser.me/api/portraits/men/36.jpg",
     course: "B.Tech Electronics",
     year: "4th Year",
     regNumber: "BT19EC032",
@@ -116,26 +240,34 @@ const candidates = [
     position: "Vice President",
     motto: "Building Bridges, Creating Change",
     manifesto: [
-      "Establish inter-department collaboration programs",
-      "Improve campus WiFi infrastructure",
-      "Create student entrepreneurship hub",
+      "Establish inter-department collaboration programs for interdisciplinary projects",
+      "Improve campus WiFi infrastructure in all areas including hostels",
+      "Create student entrepreneurship hub with mentorship and funding opportunities",
+      "Implement eco-friendly waste management system",
+      "Organize more industry expert talks and workshops"
     ],
     previousRoles: [
       "Cultural Committee Head",
       "Department Student Representative",
+      "IEEE Student Branch Executive"
     ],
     achievements: [
       "University Innovation Fellow",
       "National Robotics Competition Winner",
+      "Research paper publication in IEEE conference"
     ],
     socialContributions: [
-      "Weekend Teaching Program for underprivileged students",
+      "Weekend Teaching Program for underprivileged students - 2 years running",
       "E-waste Management Campaign Leader",
+      "Technical skill workshops for rural school teachers"
     ],
-  },
+    voteCount: 1053,
+    votePercentage: "35%"
+  }
 ]
 
-const voters = [
+// Expanded voters data with more realistic entries
+const votersData = [
   {
     id: 1,
     name: "Alice Smith",
@@ -143,6 +275,7 @@ const voters = [
     course: "B.Tech Computer Science",
     year: "2nd Year",
     voted: true,
+    votedAt: "2025-05-20T09:15:22Z"
   },
   {
     id: 2,
@@ -150,7 +283,7 @@ const voters = [
     regNumber: "BT20EC015",
     course: "B.Tech Electronics",
     year: "3rd Year",
-    voted: false,
+    voted: false
   },
   {
     id: 3,
@@ -159,6 +292,7 @@ const voters = [
     course: "B.Tech Mechanical",
     year: "1st Year",
     voted: true,
+    votedAt: "2025-05-20T10:45:11Z"
   },
   {
     id: 4,
@@ -167,6 +301,7 @@ const voters = [
     course: "B.Tech Civil",
     year: "4th Year",
     voted: true,
+    votedAt: "2025-05-20T08:30:45Z"
   },
   {
     id: 5,
@@ -174,10 +309,105 @@ const voters = [
     regNumber: "BT21EE011",
     course: "B.Tech Electrical",
     year: "2nd Year",
-    voted: false,
+    voted: false
   },
+  {
+    id: 6,
+    name: "Fiona Wilson",
+    regNumber: "BT20CS078",
+    course: "B.Tech Computer Science",
+    year: "3rd Year",
+    voted: true,
+    votedAt: "2025-05-20T11:22:33Z"
+  },
+  {
+    id: 7,
+    name: "George Miller",
+    regNumber: "BT22CH045",
+    course: "B.Tech Chemical",
+    year: "1st Year",
+    voted: false
+  },
+  {
+    id: 8,
+    name: "Hannah Garcia",
+    regNumber: "BT19ME062",
+    course: "B.Tech Mechanical",
+    year: "4th Year",
+    voted: true,
+    votedAt: "2025-05-20T14:05:17Z"
+  },
+  {
+    id: 9,
+    name: "Ian Parker",
+    regNumber: "BT21CV033",
+    course: "B.Tech Civil",
+    year: "2nd Year",
+    voted: true,
+    votedAt: "2025-05-20T15:30:28Z"
+  },
+  {
+    id: 10,
+    name: "Julia Kim",
+    regNumber: "BT20BT019",
+    course: "B.Tech Biotechnology",
+    year: "3rd Year",
+    voted: false
+  },
+  {
+    id: 11,
+    name: "Kevin Patel",
+    regNumber: "BT22CS089",
+    course: "B.Tech Computer Science",
+    year: "1st Year",
+    voted: true,
+    votedAt: "2025-05-20T12:12:54Z"
+  },
+  {
+    id: 12,
+    name: "Linda Martinez",
+    regNumber: "BT19EC041",
+    course: "B.Tech Electronics",
+    year: "4th Year",
+    voted: true,
+    votedAt: "2025-05-20T10:08:39Z"
+  }
 ]
-import axios from "axios"
+
+// Election statistics for visualization
+const electionStats = {
+  totalRegisteredVoters: 4250,
+  totalVotesCast: 2876,
+  voterTurnout: 67.7,
+  votingTrends: [
+    { hour: "8 AM", votes: 342 },
+    { hour: "9 AM", votes: 518 },
+    { hour: "10 AM", votes: 476 },
+    { hour: "11 AM", votes: 385 },
+    { hour: "12 PM", votes: 290 },
+    { hour: "1 PM", votes: 225 },
+    { hour: "2 PM", votes: 198 },
+    { hour: "3 PM", votes: 156 },
+    { hour: "4 PM", votes: 187 },
+    { hour: "5 PM", votes: 99 }
+  ],
+  departmentWiseTurnout: [
+    { department: "Computer Science", turnout: 76.2 },
+    { department: "Electronics", turnout: 72.5 },
+    { department: "Mechanical", turnout: 68.9 },
+    { department: "Civil", turnout: 65.3 },
+    { department: "Electrical", turnout: 70.1 },
+    { department: "Chemical", turnout: 63.7 },
+    { department: "Biotechnology", turnout: 59.8 }
+  ],
+  yearWiseTurnout: [
+    { year: "1st Year", turnout: 72.3 },
+    { year: "2nd Year", turnout: 68.5 },
+    { year: "3rd Year", turnout: 75.2 },
+    { year: "4th Year", turnout: 60.8 }
+  ]
+}
+
 export default function ElectionDashboard() {
   const [voters, setVoters] = useState([])
   const [viewType, setViewType] = useState("table")

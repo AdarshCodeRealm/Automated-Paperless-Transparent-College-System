@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import bgImage from "../assets/loginscreen-bg.jpg"
 import { useNavigate } from "react-router-dom"
-import { redirect } from "react-router-dom"
+// import { redirect } from "react-router-dom"
 import axios from "axios"
 import { toast } from "react-toastify"
 import AuthContext from "../context/AuthContext.jsx"
@@ -250,6 +250,24 @@ export default function AuthPage() {
               >
                 {isLogin ? "Login" : "Create account"}
               </Button>
+              
+              {isLogin && (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    // Skip authentication and log in as a demo user
+                    login({
+                      email: "demo@hackfusion.com",
+                      password: "demopassword"
+                    });
+                    toast.success("Logged in as demo user");
+                    navigate("/");
+                  }}
+                  className="w-full mt-2 bg-amber-500/30 backdrop-blur-md border border-amber-500/30 hover:bg-amber-500/50 transition-all duration-300 text-white font-semibold rounded-md py-2"
+                >
+                  Skip Authentication (Demo Mode)
+                </Button>
+              )}
             </div>
 
             {isLogin && (

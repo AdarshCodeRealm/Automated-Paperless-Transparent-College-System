@@ -8,6 +8,7 @@ import {
   deleteComplaint,
   createComment,
   deleteComment,
+  seedComplaintData,
 } from "../controllers/complaint.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 const router = Router()
@@ -25,5 +26,8 @@ router.route("/").get(getAllComplaints)
 router.delete("/:id", verifyJWT, deleteComplaint)
 router.post("/comment/:id", verifyJWT, createComment)
 router.delete("/comment/:id", verifyJWT, deleteComment)
+
+// Special route to seed complaint data
+router.route("/seed-data").post(seedComplaintData)
 
 export default router

@@ -49,24 +49,32 @@ export default function AdminPage() {
 
   const handleSubmit = async () => {
     try {
-      console.log(newViolation)
-      const formData = new FormData()
-      for (const key in newViolation) {
-        formData.append(key, newViolation[key])
+      // For demonstration, add the new record to our dummy data instead
+      const newRecord = {
+        _id: `rec${Math.floor(Math.random() * 1000)}`,
+        registrationNumber: newViolation.registrationNumber,
+        fullName: newViolation.fullName,
+        year: newViolation.year,
+        branch: newViolation.branch,
+        email: newViolation.email,
+        subjectCode: newViolation.subjectCode,
+        subjectName: newViolation.subjectName,
+        invigilatorName: newViolation.invigilatorName,
+        invigilatorID: newViolation.invigilatorID,
+        reason: newViolation.reason,
+        evidence: newViolation.evidence ? [newViolation.evidence.name] : [],
+        createdAt: new Date().toISOString(),
+        date: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
       }
-      await axios.post(
-        `${backend_URL}/integrityAndCheatingRecord`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
 
+      setRecords([newRecord, ...records])
       toast.success("Record created successfully!")
 
-      fetchViolations()
+      // Reset form
       setNewViolation({
         registrationNumber: "",
         fullName: "",
@@ -85,6 +93,24 @@ export default function AdminPage() {
         fileInputRef.current.value = ""
       }
       setIsDialogOpen(false)
+
+      /* Uncomment for real API call
+      console.log(newViolation)
+      const formData = new FormData()
+      for (const key in newViolation) {
+        formData.append(key, newViolation[key])
+      }
+      await axios.post(
+        `${backend_URL}/integrityAndCheatingRecord`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      fetchViolations()
+      */
     } catch (error) {
       console.error("Error creating violation:", error)
     }
@@ -97,11 +123,16 @@ export default function AdminPage() {
       )
     ) {
       try {
+        // For demonstration, remove from local state
+        setRecords(records.filter((record) => record._id !== id))
+        toast.success("Record deleted successfully!")
+
+        /* Uncomment for real API call
         await axios.delete(
           `${backend_URL}/integrityAndCheatingRecord/${id}`
-        ) // Adjust the API endpoint as needed
-        toast.success("Record deleted successfully!")
+        )
         fetchViolations()
+        */
       } catch (error) {
         console.error("Error deleting violation:", error)
       }
@@ -109,13 +140,22 @@ export default function AdminPage() {
   }
 
   const fetchViolations = async () => {
+    setRecords([]) // Clear records
+
     try {
+      // For demonstration, use dummy data instead of API call
+      setTimeout(() => {
+        setRecords(dummyRecords)
+      }, 1000)
+
+      /* Uncomment for real API call
       const response = await axios.get(
         `${backend_URL}/integrityAndCheatingRecord`
-      ) // Adjust the API endpoint as needed
+      )
       if (response.status === 200) {
         setRecords(response.data)
       }
+      */
     } catch (error) {
       console.error("Error fetching violations:", error)
     }
@@ -148,6 +188,95 @@ export default function AdminPage() {
     reason: "",
     evidence: null,
   })
+
+  // Add dummy data for demonstration
+  const dummyRecords = [
+    {
+      _id: "rec1",
+      registrationNumber: "BT20CS045",
+      fullName: "Aditya Sharma",
+      year: "3rd Year",
+      branch: "Computer Science",
+      email: "aditya.sharma@university.edu",
+      subjectCode: "CS301",
+      subjectName: "Data Structures and Algorithms",
+      invigilatorName: "Dr. Rajesh Gupta",
+      invigilatorID: "FAC112",
+      reason:
+        "Found using unauthorized handwritten notes during examination",
+      evidence: ["evidence1.pdf"],
+      createdAt: "2025-05-10T09:30:00Z",
+      date: "May 10, 2025",
+    },
+    {
+      _id: "rec2",
+      registrationNumber: "BT21EC032",
+      fullName: "Priya Patel",
+      year: "2nd Year",
+      branch: "Electronics",
+      email: "priya.patel@university.edu",
+      subjectCode: "EC204",
+      subjectName: "Digital Electronics",
+      invigilatorName: "Dr. Meena Singh",
+      invigilatorID: "FAC098",
+      reason:
+        "Caught using mobile phone to access information during exam",
+      evidence: ["evidence2.jpg"],
+      createdAt: "2025-05-12T14:15:00Z",
+      date: "May 12, 2025",
+    },
+    {
+      _id: "rec3",
+      registrationNumber: "BT22ME019",
+      fullName: "Rahul Verma",
+      year: "1st Year",
+      branch: "Mechanical Engineering",
+      email: "rahul.verma@university.edu",
+      subjectCode: "ME101",
+      subjectName: "Engineering Mechanics",
+      invigilatorName: "Prof. Sanjay Kumar",
+      invigilatorID: "FAC076",
+      reason:
+        "Caught communicating with another student during examination",
+      evidence: ["evidence3.mp4"],
+      createdAt: "2025-05-15T10:45:00Z",
+      date: "May 15, 2025",
+    },
+    {
+      _id: "rec4",
+      registrationNumber: "BT19CV022",
+      fullName: "Neha Gupta",
+      year: "4th Year",
+      branch: "Civil Engineering",
+      email: "neha.gupta@university.edu",
+      subjectCode: "CV405",
+      subjectName: "Structural Design",
+      invigilatorName: "Dr. Anand Mishra",
+      invigilatorID: "FAC054",
+      reason:
+        "Submission of identical project report with another student, evidence of plagiarism",
+      evidence: ["evidence4.pdf"],
+      createdAt: "2025-05-18T16:30:00Z",
+      date: "May 18, 2025",
+    },
+    {
+      _id: "rec5",
+      registrationNumber: "BT20EE011",
+      fullName: "Arjun Mehta",
+      year: "3rd Year",
+      branch: "Electrical Engineering",
+      email: "arjun.mehta@university.edu",
+      subjectCode: "EE307",
+      subjectName: "Power Systems",
+      invigilatorName: "Prof. Leela Krishnan",
+      invigilatorID: "FAC089",
+      reason:
+        "Unauthorized formula sheet found in possession during examination",
+      evidence: ["evidence5.jpg"],
+      createdAt: "2025-05-20T11:20:00Z",
+      date: "May 20, 2025",
+    },
+  ]
 
   return (
     <div className="min-h-screen p-6 dark:bg-gray-950">
