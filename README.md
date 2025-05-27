@@ -1,4 +1,4 @@
-# HackFusion 2025
+# Automated Paperless Transparent College System
 
 **Background:**
 Colleges often struggle with transparency in administrative processes, student elections, financial tracking, and complaint management. Manual processes lead to delays, lack of accountability, and limited student involvement. An automated, paperless system can improve efficiency, fairness, and accessibility.
